@@ -106,3 +106,11 @@
 - Vercel: `vercel deploy --prod` بـ token جديد → `https://nuzhat-al-mushtaq.vercel.app` (HTTP 200، ملف البيانات 158,632 بايت).
 - Cloudflare Workers: `wrangler deploy` بعد إعادة بناء `worker.js` من `index.html` + `all-regions.js` → `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev` (HTTP 200، الإصدار `ebea3cfa`).
 - جميع المنصات الثلاث تعرض النص الكامل (ملف البيانات مطابق الحجم: 158,632 بايت في كل منصة).
+
+## 12. تغيير الخط (طلبه المستخدم)
+
+- **الطلب:** «https://fonts.google.com/specimen/Cairo?hl=fr-FR change font» — تطبيق خط Cairo.
+- **الإجراء:** أُضيف `<link>` لخط Cairo من Google Fonts (مع `preconnect`) في `index.html`، ووُضع `"Cairo"` في مقدمة `font-family` (مع بقاء خطوط النظام كاحتياطي).
+- **ملاحظة:** هذا يستثني قاعدة «خطوط النظام فقط» السابقة بناءً على طلب صريح من المستخدم.
+- **الإصدار:** commit `c951be7` — "Use Cairo font from Google Fonts".
+- **النشر:** أُعيد البناء والنشر على المنصات الثلاث (GitHub Pages، Vercel، Cloudflare Workers — Worker version `ff5681a9`) وكلها HTTP 200 وتعرض الخط.
