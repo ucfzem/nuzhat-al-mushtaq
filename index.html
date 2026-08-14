@@ -287,19 +287,19 @@
     let openRegionIdx = -1;
 
     function toggleRegion(i) {
-      const items = contentEl.querySelectorAll('.clime-item');
       openRegionIdx = openRegionIdx === i ? -1 : i;
       REGIONS_DB.forEach((r, k) => {
+        const btn = contentEl.querySelector('.clime-btn[data-region="' + k + '"]');
+        if (!btn) return;
         const isOpen = k === openRegionIdx;
-        items[k].querySelector('.clime-parts').classList.toggle('open', isOpen);
-        items[k].querySelector('.clime-btn').textContent =
-          pad(r.id) + ' — ' + r.title + (isOpen ? ' ▲' : ' ▼');
+        btn.nextElementSibling.classList.toggle('open', isOpen);
+        btn.textContent = pad(r.id) + ' — ' + r.title + (isOpen ? ' ▲' : ' ▼');
       });
       if (openRegionIdx !== -1) {
-        const first = items[i] && items[i].querySelector('.clime-part');
+        const first = contentEl.querySelector('.clime-btn[data-region="' + i + '"]').nextElementSibling.querySelector('.clime-part');
         if (first) first.focus({ preventScroll: true });
       } else {
-        const btn = items[i] && items[i].querySelector('.clime-btn');
+        const btn = contentEl.querySelector('.clime-btn[data-region="' + i + '"]');
         if (btn) btn.focus({ preventScroll: true });
       }
     }
@@ -314,9 +314,9 @@
           '<p style="font-size:.85rem;color:#7a6a50">' + META.source + '</p>' +
           '<h2>اختر إقليماً للبدء</h2>' +
           '<div class="clime-list">' +
-            REGIONS_DB.map(r =>
+            REGIONS_DB.map((r, i) =>
               '<div class="clime-item">' +
-                '<button type="button" class="clime-btn">' + pad(r.id) + ' — ' + r.title + ' ▼</button>' +
+                '<button type="button" class="clime-btn" data-region="' + i + '">' + pad(r.id) + ' — ' + r.title + ' ▼</button>' +
                 '<div class="clime-parts">' +
                   r.parts.map(p => '<button type="button" class="clime-part">' + p.id + ' — ' + p.name + '</button>').join('') +
                 '</div>' +
