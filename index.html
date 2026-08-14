@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نزهة المشتاق في اختراق الآفاق — الشريف الإدريسي</title>
+  <meta name="description" content="عرض أمين لكتاب نزهة المشتاق في اختراق الآفاق للإدريسي: 7 أقاليم مناخية، كل إقليم في 10 أجزاء، بحسب الترتيب الأصلي.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #3d2b1f;
+      --paper: #faf3e5;
+      --paper-2: #f3e7d1;
+      --gold: #a9792f;
+      --gold-dark: #7c5620;
+      --green: #1f5c46;
+      --line: #d8c9a8;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Cairo', 'Amiri', serif;
+      line-height: 1.9;
+    }
+    header {
+      position: sticky; top: 0; z-index: 20;
+      background: linear-gradient(135deg, #25433a, #1f5c46);
+      color: #f5eeda;
+      padding: 14px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    header .brand {
+      display: flex; align-items: center; gap: 12px; flex: 1 1 260px;
+    }
+    header h1 {
+      font-family: 'Amiri', serif;
+      margin: 0; font-size: 1.35rem; line-height: 1.4;
+    }
+    header .subtitle { font-size: .8rem; opacity: .85; }
+    header .icon { font-size: 1.8rem; }
+    .search-wrap {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 8px; padding: 4px 10px;
+    }
+    .search-wrap input {
+      background: transparent; border: none; outline: none;
+      color: #fff; font-family: inherit; font-size: .9rem; width: 200px;
+    }
+    .search-wrap input::placeholder { color: #cdd8cf; }
+    .empty-hint { display: inline-block; margin-inline-start: 10px; font-size: .85rem; }
+    .empty-hint a { color: #dce9ff; }
+    .layout { display: flex; min-height: calc(100vh - 64px); }
+    nav.sidebar {
+      width: 330px; min-width: 260px;
+      background: var(--paper-2);
+      border-inline-end: 1px solid var(--line);
+      overflow-y: auto; padding: 12px;
+    }
+    nav.sidebar .region-head {
+      width: 100%; text-align: right;
+      background: var(--green); color: #f6efdc;
+      border: none; border-radius: 8px; padding: 10px 14px;
+      font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem;
+      cursor: pointer; margin: 6px 0; transition: filter .15s;
+    }
+    nav.sidebar .region-head:hover { filter: brightness(1.1); }
+    nav.sidebar .parts { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+    nav.sidebar .parts.open { max-height: 500px; overflow-y: auto; }
+    nav.sidebar .part-btn {
+      display: block; width: 100%; text-align: right;
+      background: transparent; border: 1px solid transparent;
+      border-radius: 6px; padding: 7px 14px; margin: 2px 0;
+      font-family: 'Cairo', sans-serif; font-size: .85rem; color: var(--ink);
+      cursor: pointer; transition: all .15s;
+    }
+    nav.sidebar .part-btn:hover { background: #efe0c4; }
+    nav.sidebar .part-btn.active {
+      background: var(--gold); color: #fff; border-color: var(--gold-dark); font-weight: 700;
+    }
+    main {
+      flex: 1; padding: 28px 34px; overflow-y: auto;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .card {
+      background: #fffdf7;
+      border: 1px solid var(--line);
+      border-inline-start: 5px solid var(--gold);
+      border-radius: 10px; padding: 22px 26px; margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(61,43,31,.08);
+    }
+    .card h2 { font-family: 'Amiri', serif; margin: 0 0 6px; font-size: 1.4rem; color: var(--gold-dark); }
+    .card .kicker { font-size: .8rem; color: #7a6a50; margin-bottom: 8px; }
+    .card p { margin: 8px 0; }
+    .content-text { font-family: 'Amiri', serif; font-size: 1.12rem; }
+    .modern {
+      background: #eef4ef;
+      border-inline-start: 5px solid var(--green);
+    }
+    .modern h3 { color: var(--green); font-family: 'Amiri', serif; margin: 0 0 6px; font-size: 1.1rem; }
+    .note {
+      background: #fbf0dc;
+      border-radius: 8px; padding: 10px 14px; font-size: .85rem;
+      border: 1px dashed var(--gold); margin-top: 14px;
+    }
+    .meta { font-family: 'Cairo', sans-serif; }
+    .pager {
+      display: flex; justify-content: space-between; gap: 12px;
+      margin-top: 22px; align-items: center;
+    }
+    .pager button, .print-btn {
+      font-family: 'Cairo', sans-serif; font-weight: 700;
+      background: var(--green); color: #fff; border: none;
+      border-radius: 8px; padding: 9px 18px; cursor: pointer; transition: filter .15s;
+      font-size: .9rem;
+    }
+    .pager button:hover, .print-btn:hover { filter: brightness(1.12); }
+    .pager button:disabled { opacity: .4; cursor: not-allowed; }
+    .print-btn { background: var(--gold); }
+    .wrap-btns { display: flex; gap: 10px; align-items: center; }
+    footer {
+      text-align: center; font-size: .8rem; color: #7a6a50;
+      padding: 18px; border-top: 1px solid var(--line);
+    }
+    .home-screen { text-align: center; padding: 40px 20px; }
+    .home-screen h1 { font-family: 'Amiri', serif; color: var(--gold-dark); font-size: 2rem; }
+    .home-screen .img { font-size: 3.4rem; margin: 10px; }
+    .clime-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 18px;
+    }
+    .clime-grid button {
+      background: var(--paper-2); border: 1px solid var(--line);
+      border-radius: 8px; padding: 12px; cursor: pointer; font-family: 'Cairo', sans-serif;
+      font-weight: 700; color: var(--ink); transition: all .15s;
+    }
+    .clime-grid button:hover { background: var(--gold); color: #fff; border-color: var(--gold-dark); }
+    @media (max-width: 760px) {
+      .layout { flex-direction: column-reverse; }
+      nav.sidebar { width: 100%; max-height: 40vh; border-inline-end: none; border-bottom: 1px solid var(--line); }
+      main { padding: 18px 14px; }
+      .search-wrap input { width: 130px; }
+      .pager { flex-wrap: wrap; }
+    }
+    @media print {
+      header, nav.sidebar, .pager, .wrap-btns, .empty-hint { display: none !important; }
+      .layout { display: block; }
+      main { padding: 0; }
+      body, main { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="icon">🌍</span>
+      <div>
+        <h1>نزهة المشتاق في اختراق الآفاق</h1>
+        <div class="subtitle">للشريف الإدريسي — ٧ أقاليم × ١٠ أجزاء، بالترتيب الأصلي</div>
+      </div>
+    </div>
+    <div class="wrap-btns">
+      <div class="search-wrap">
+        <span>🔎</span>
+        <input type="search" id="search" placeholder="ابحث عن إقليم أو جزء…" aria-label="بحث">
+        <span class="empty-hint" id="searchStatus" style="display:none">
+          لا نتائج لـ «<b id="searchTerm"></b>»
+          <a href="#" id="searchClear">مسح</a>
+        </span>
+      </div>
+      <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="sidebar" aria-label="فهرس الأقاليم"></nav>
+
+    <main id="content"></main>
+  </div>
+
+  <footer>
+    <p>
+      📜 <b>نزهة المشتاق في اختراق الآفاق</b> — أبو عبد الله محمد بن محمد الإدريسي الهاشمي القرشي (٤٩٣–٥٦٠هـ / ١١٠٠–١١٦٥م)، أُنجز بتكليف من الملك روجر الثاني الصقلي نحو ٥٤٨هـ / ١١٥٤م.
+    </p>
+    <p>المصدر: الطبعة المحققة (عالم الكتب، بيروت ١٩٨٩م) ومكتبة الشاملة الإلكترونية
+      · <a href="https://shamela.ws/book/11787" target="_blank" rel="noopener" style="color:var(--gold-dark)">النص الكامل على المكتبة الشاملة ↗</a>
+      · الأجزاء التي لم يُكتمل نصها الحرفي موسومة «قيد الإضافة» ولا يُختلق فيها نص غير مؤكد.</p>
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    let state = {
+      region: params.has('r') ? parseInt(params.get('r'), 10) : null,
+      part: params.has('p') ? parseInt(params.get('p'), 10) : null
+    };
+
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const search = document.getElementById('search');
+    const searchStatus = document.getElementById('searchStatus');
+    const searchTerm = document.getElementById('searchTerm');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function isNum(v) { return Number.isFinite(v) && v >= 1; }
+
+    function buildSidebar() {
+      sidebar.innerHTML = '';
+      REGIONS.forEach((reg, ri) => {
+        const head = document.createElement('button');
+        head.className = 'region-head';
+        head.textContent = `${pad(reg.id)} — ${reg.name}`;
+        head.addEventListener('click', () => {
+          const parts = head.nextElementSibling;
+          const open = parts.classList.toggle('open');
+          head.textContent = `${pad(reg.id)} — ${reg.name} ${open ? '▲' : '▼'}`;
+        });
+        sidebar.appendChild(head);
+
+        const parts = document.createElement('div');
+        parts.className = 'parts';
+        reg.parts.forEach(part => {
+          const b = document.createElement('button');
+          b.className = 'part-btn';
+          b.dataset.r = reg.id;
+          b.dataset.p = part.id;
+          b.textContent = `§${reg.id}.${pad(part.id)} — ${part.title}`;
+          b.addEventListener('click', () => {
+            state.region = reg.id; state.part = part.id;
+            render(); reflectUrl();
+          });
+          parts.appendChild(b);
+        });
+        sidebar.appendChild(parts);
+      });
+    }
+
+    function highlightSidebar() {
+      document.querySelectorAll('.part-btn').forEach(btn => {
+        btn.classList.toggle('active',
+          btn.dataset.r == state.region && btn.dataset.p == state.part);
+      });
+      if (state.region) {
+        const head = sidebar.querySelector('.region-head');
+        // open the region crisply
+        document.querySelectorAll('.parts').forEach((p) => p.classList.remove('open'));
+        const targetHead = [...sidebar.querySelectorAll('.region-head')]
+          .find(h => h.textContent.includes(`— ${pad(state.region)}`) ||
+                        h.nextElementSibling && h.nextElementSibling.querySelector(`[data-r="${state.region}"]`));
+        if (targetHead && targetHead.nextElementSibling) {
+          targetHead.nextElementSibling.classList.add('open');
+          targetHead.textContent = `${pad(state.region)} — ${REGIONS[state.region - 1].name} ▲`;
+        }
+      }
+    }
+
+    function render() {
+      const reg = REGIONS[state.region - 1];
+      if (!reg) { renderHome(); return; }
+      const part = reg.parts.find(p => p.id == state.part);
+      if (!part) { renderHome(); return; }
+      const idx = reg.parts.findIndex(p => p.id == state.part);
+      const prev = idx > 0 ? reg.parts[idx - 1] : null;
+      const next = idx < reg.parts.length - 1 ? reg.parts[idx + 1] : null;
+
+      content.innerHTML = `
+        <div class="card">
+          <div class="kicker meta">${reg.name} · ${part.title}</div>
+          <h2>${part.title}</h2>
+          <p class="content-text">${part.summary}</p>
+          <div class="note">⚠️ تنويه: النص الحرفي الكامل لهذا الجزء قيد الإضافة من الطبعة المحققة والمصادر الموثوقة، ولم يُختلق أي نص غير مؤكد.
+            <br>🔗 النص الأصلي على المكتبة الشاملة: <a href="${IDRISI_META.shamelaUrl}/${reg.pages[idx]}" target="_blank" rel="noopener">الجزء ${pad(part.id)} من ${reg.name} ↗</a></div>
+        </div>
+        <div class="card modern">
+          <h3>🧭 عرض حديث <span style="font-weight:400;font-size:.85rem;color:#7a6a50">(مستوحى من منهج الإدريسي، وليس من الكتاب الأصلي)</span></h3>
+          <p>${part.modern}</p>
+        </div>
+        <div class="pager">
+          <button id="prevBtn" ${prev ? '' : 'disabled'}>← الجزء السابق</button>
+          <div class="meta" style="font-size:.8rem;color:#7a6a50">
+            ${reg.name} — الجزء ${pad(part.id)} من ١٠
+          </div>
+          <button id="nextBtn" ${next ? '' : 'disabled'}>الجزء التالي →</button>
+        </div>`;
+      if (prev) document.getElementById('prevBtn').onclick = () => goto(reg.id, prev.id);
+      if (next) document.getElementById('nextBtn').onclick = () => goto(reg.id, next.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      highlightSidebar();
+    }
+
+    function renderHome() {
+      content.innerHTML = `
+        <div class="home-screen">
+          <div class="img">📜</div>
+          <h1>نزهة المشتاق في اختراق الآفاق</h1>
+          <p class="meta" style="font-size:1rem">أبو عبد الله محمد بن محمد الإدريسي الهاشمي القرشي · المعروف بالشريف الإدريسي (٤٩٣–٥٦٠هـ / ١١٠٠–١١٦٥م)</p>
+          <p style="max-width:700px;margin:14px auto">
+            من أعظم كتب الجغرافيا في التاريخ الإسلامي، أُلّف بتكليف من الملك روجر الثاني في صقلية نحو سنة ٥٤٨هـ / ١١٥٤م.
+            بنى الإدريسي تقسيمه للعالم على <b>سبعة أقاليم مناخية</b>، وقسّم كل إقليم إلى <b>عشرة أجزاء</b> من الغرب إلى الشرق،
+            واصفاً البلاد والمدن والأنهار والمسالك. هذا الموقع يعرض الأقاليم والأجزاء بحسب الترتيب الأصلي، مع التزام تام بالأمانة العلمية.
+          </p>
+          <p class="meta" style="font-size:.85rem;color:#7a6a50">${IDRISI_META.source}
+            — النص الأصلي الكامل: <a href="${IDRISI_META.shamelaUrl}" target="_blank" rel="noopener">المكتبة الشاملة ↗</a></p>
+          <h2 style="font-family:'Amiri',serif;color:var(--gold-dark);margin-top:28px">اختر إقليماً للبدء</h2>
+          <div class="clime-grid">
+            ${REGIONS.map(r =>
+              `<button onclick="goto(${r.id},1)">${pad(r.id)} — ${r.name}</button>`).join('')}
+          </div>
+        </div>`;
+      highlightSidebar();
+    }
+
+    function goto(r, p) {
+      state.region = r; state.part = p;
+      render(); reflectUrl();
+    }
+
+    function reflectUrl() {
+      const url = new URL(location);
+      url.searchParams.set('r', state.region);
+      url.searchParams.set('p', state.part);
+      history.replaceState(null, '', url);
+    }
+
+    function doSearch(q) {
+      q = q.trim();
+      if (!q) { searchStatus.style.display = 'none'; searchTerm.textContent = ''; return; }
+      let hits = [];
+      REGIONS.forEach(reg => {
+        reg.parts.forEach(part => {
+          if (reg.name.includes(q) || part.title.includes(q) || part.summary.includes(q)) {
+            hits.push({ reg, part });
+          }
+        });
+      });
+      if (!hits.length) {
+        searchStatus.style.display = 'inline-block';
+        searchTerm.textContent = q;
+        return;
+      }
+      searchStatus.style.display = 'none';
+      const [first] = hits;
+      state.region = first.reg.id; state.part = first.part.id;
+      render(); reflectUrl();
+      if (hits.length > 1) {
+        content.insertAdjacentHTML('afterbegin',
+          `<div class="note">تم العثور على ${hits.length} نتائج — في ما يلي أولها.</div>`);
+      }
+    }
+
+    search.addEventListener('input', e => doSearch(e.target.value));
+    document.getElementById('searchClear').addEventListener('click', e => {
+      e.preventDefault();
+      search.value = ''; searchStatus.style.display = 'none';
+      doSearch('');
+    });
+
+    buildSidebar();
+    if (isNum(state.region) && isNum(state.part) && REGIONS[state.region - 1]) {
+      render();
+    } else {
+      renderHome();
+    }
+  </script>
+</body>
+</html>
