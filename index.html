@@ -76,20 +76,58 @@
     .home .desc { max-width: 640px; margin: 12px auto; font-size: .95rem; }
     .clime-list {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 8px; margin-top: 18px;
+      gap: 8px; margin-top: 18px; align-items: start;
     }
-    .clime-list button {
+    .clime-item { display: flex; flex-direction: column; }
+    .clime-btn {
       background: var(--panel); border: 1px solid var(--line);
       border-radius: 6px; padding: 10px; cursor: pointer;
       font-family: inherit; font-weight: bold; color: var(--ink);
     }
-    .clime-list button:hover { background: var(--gold); color: #fff; }
+    .clime-btn:hover { background: var(--gold); color: #fff; }
+    .clime-parts {
+      max-height: 0; overflow: hidden;
+      transition: max-height .25s ease;
+      background: #fffdf6;
+    }
+    .clime-parts.open {
+      max-height: 420px; overflow-y: auto;
+      border: 1px solid var(--line); border-top: none;
+      border-radius: 0 0 6px 6px;
+    }
+    .clime-part {
+      display: block; width: 100%; text-align: right;
+      background: transparent; border: none;
+      padding: 6px 10px; font-family: inherit; font-size: .85rem;
+      color: var(--ink); cursor: pointer;
+    }
+    .clime-part:hover { background: var(--gold); color: #fff; }
+    button:focus, a:focus {
+      outline: 3px solid #ffd166;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 8px rgba(255, 209, 102, .35), 0 0 24px 6px rgba(255, 209, 102, .6);
+    }
     footer {
       text-align: center; font-size: .78rem; color: #7a6a50;
       padding: 14px; border-top: 1px solid var(--line);
     }
+    @media (min-width: 1400px) {
+      main { max-width: 1100px; }
+      .clime-list { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+      .clime-btn { font-size: 1.25rem; padding: 18px 14px; }
+      .clime-part { font-size: 1.05rem; padding: 10px 14px; }
+      .pager button { font-size: 1.05rem; padding: 12px 24px; }
+      .topnav button { font-size: .95rem; padding: 8px 18px; }
+      .card { font-size: 1.08rem; }
+    }
+    @media (min-width: 701px) and (max-width: 1200px) {
+      .clime-list { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+    }
     @media (max-width: 700px) {
       main { padding: 16px 12px; }
+      .clime-btn { padding: 14px 10px; }
+      .pager { flex-wrap: wrap; }
+      .pager button { flex: 1; min-width: 120px; }
     }
     @media print {
       .topnav, .pager { display: none !important; }
@@ -126,6 +164,79 @@
     const META = IDRISI_META;
 
     function pad(n) { return String(n).padStart(2, '0'); }
+
+    const FOCUSABLE_SEL = '#content button:not(:disabled), #content a[href]';
+
+    function getFocusables() {
+      return Array.from(document.querySelectorAll(FOCUSABLE_SEL))
+        .filter(el => !el.closest('.clime-parts:not(.open)'));
+    }
+
+    function spatialMove(dir) {
+      const items = getFocusables();
+      if (!items.length) return null;
+      const cur = document.activeElement;
+      if (!items.includes(cur)) return items[0];
+      const curPanel = cur.closest('.clime-parts.open');
+      const ownOpenPanel = cur.classList.contains('clime-btn') && cur.nextElementSibling &&
+        cur.nextElementSibling.classList.contains('open');
+      const c = cur.getBoundingClientRect();
+      const cx = c.left + c.width / 2, cy = c.top + c.height / 2;
+      const vertical = dir === 'ArrowUp' || dir === 'ArrowDown';
+      let best = null, bestScore = Infinity;
+      for (const el of items) {
+        if (el === cur) continue;
+        const r = el.getBoundingClientRect();
+        const ex = r.left + r.width / 2, ey = r.top + r.height / 2;
+        const dx = ex - cx, dy = ey - cy;
+        let primary, secondary;
+        if (dir === 'ArrowUp') { if (ey >= cy) continue; primary = dy; secondary = Math.abs(dx); }
+        else if (dir === 'ArrowDown') { if (ey <= cy) continue; primary = dy; secondary = Math.abs(dx); }
+        else if (dir === 'ArrowLeft') { if (ex >= cx) continue; primary = dx; secondary = Math.abs(dy); }
+        else if (dir === 'ArrowRight') { if (ex <= cx) continue; primary = dx; secondary = Math.abs(dy); }
+        else continue;
+        let score = Math.abs(primary) + secondary * 2;
+        if (vertical && curPanel) {
+          const same = el.closest('.clime-parts.open') === curPanel;
+          score = same ? score * 0.2 : score * 4;
+        } else if (vertical && ownOpenPanel && dir === 'ArrowDown') {
+          const same = el.closest('.clime-parts') === cur.nextElementSibling;
+          score = same ? score * 0.2 : score * 4;
+        }
+        if (score < bestScore) { bestScore = score; best = el; }
+      }
+      return best;
+    }
+
+    function focusFirstControl() {
+      const home = document.getElementById('homeBtn');
+      if (home) { home.focus({ preventScroll: true }); return; }
+      const next = document.getElementById('nextBtn');
+      if (next && !next.disabled) { next.focus({ preventScroll: true }); return; }
+      const items = getFocusables();
+      if (items.length) items[0].focus({ preventScroll: true });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      if (key === 'ArrowUp' || key === 'ArrowDown' || key === 'ArrowLeft' || key === 'ArrowRight') {
+        e.preventDefault();
+        const target = spatialMove(key);
+        if (target) { target.focus(); return; }
+        const vh = window.innerHeight || 600;
+        const vw = window.innerWidth || 900;
+        if (key === 'ArrowDown') window.scrollBy({ top: vh * 0.6, behavior: 'smooth' });
+        else if (key === 'ArrowUp') window.scrollBy({ top: -vh * 0.6, behavior: 'smooth' });
+        else if (key === 'ArrowLeft') window.scrollBy({ left: -vw * 0.5, behavior: 'smooth' });
+        else if (key === 'ArrowRight') window.scrollBy({ left: vw * 0.5, behavior: 'smooth' });
+      } else if (key === 'Enter' || key === 'OK') {
+        const cur = document.activeElement;
+        if (cur && (cur.tagName === 'BUTTON' || cur.tagName === 'A')) {
+          e.preventDefault();
+          cur.click();
+        }
+      }
+    });
 
     function show(regId, partId) {
       const reg = REGIONS_DB.find(r => r.id == regId);
@@ -168,7 +279,27 @@
       if (prev) document.getElementById('prevBtn').onclick = () => show(reg.id, prev.id);
       if (next) document.getElementById('nextBtn').onclick = () => show(reg.id, next.id);
       document.getElementById('homeBtn').onclick = renderHome;
+      setTimeout(focusFirstControl, 0);
       window.scrollTo(0, 0);
+    }
+
+    let openRegionIdx = -1;
+
+    function toggleRegion(i) {
+      const items = contentEl.querySelectorAll('.clime-item');
+      openRegionIdx = openRegionIdx === i ? -1 : i;
+      REGIONS_DB.forEach((r, k) => {
+        const isOpen = k === openRegionIdx;
+        items[k].querySelector('.clime-parts').classList.toggle('open', isOpen);
+        items[k].querySelector('.clime-btn').textContent =
+          pad(r.id) + ' — ' + r.title + (isOpen ? ' ▲' : ' ▼');
+      });
+      if (openRegionIdx !== -1) {
+        const first = items[i].querySelector('.clime-part');
+        if (first) first.focus({ preventScroll: true });
+      } else {
+        items[i].querySelector('.clime-btn').focus({ preventScroll: true });
+      }
     }
 
     function renderHome() {
@@ -181,11 +312,23 @@
           '<p style="font-size:.85rem;color:#7a6a50">' + META.source + '</p>' +
           '<h2>اختر إقليماً للبدء</h2>' +
           '<div class="clime-list">' +
-            REGIONS_DB.map(r => '<button type="button">' + pad(r.id) + ' — ' + r.title + '</button>').join('') +
+            REGIONS_DB.map(r =>
+              '<div class="clime-item">' +
+                '<button type="button" class="clime-btn">' + pad(r.id) + ' — ' + r.title + ' ▼</button>' +
+                '<div class="clime-parts">' +
+                  r.parts.map(p => '<button type="button" class="clime-part">' + p.id + ' — ' + p.name + '</button>').join('') +
+                '</div>' +
+              '</div>'
+            ).join('') +
           '</div>' +
         '</div>';
-      const btns = contentEl.querySelectorAll('.clime-list button');
-      REGIONS_DB.forEach((r, i) => { btns[i].onclick = () => show(r.id, r.parts[0].id); });
+      const items = contentEl.querySelectorAll('.clime-item');
+      REGIONS_DB.forEach((r, i) => {
+        items[i].querySelector('.clime-btn').onclick = () => toggleRegion(i);
+        const parts = items[i].querySelectorAll('.clime-part');
+        parts.forEach((b, j) => { b.onclick = () => show(r.id, r.parts[j].id); });
+      });
+      setTimeout(focusFirstControl, 0);
     }
 
     renderHome();
