@@ -187,6 +187,7 @@
       for (const el of items) {
         if (el === cur) continue;
         const r = el.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) continue;
         const ex = r.left + r.width / 2, ey = r.top + r.height / 2;
         const dx = ex - cx, dy = ey - cy;
         let primary, secondary;
@@ -229,7 +230,7 @@
         else if (key === 'ArrowUp') window.scrollBy({ top: -vh * 0.6, behavior: 'smooth' });
         else if (key === 'ArrowLeft') window.scrollBy({ left: -vw * 0.5, behavior: 'smooth' });
         else if (key === 'ArrowRight') window.scrollBy({ left: vw * 0.5, behavior: 'smooth' });
-      } else if (key === 'Enter' || key === 'OK') {
+      } else if (key === 'Enter' || key === 'Select' || key === 'OK' || e.keyCode === 13) {
         const cur = document.activeElement;
         if (cur && (cur.tagName === 'BUTTON' || cur.tagName === 'A')) {
           e.preventDefault();
@@ -295,10 +296,11 @@
           pad(r.id) + ' — ' + r.title + (isOpen ? ' ▲' : ' ▼');
       });
       if (openRegionIdx !== -1) {
-        const first = items[i].querySelector('.clime-part');
+        const first = items[i] && items[i].querySelector('.clime-part');
         if (first) first.focus({ preventScroll: true });
       } else {
-        items[i].querySelector('.clime-btn').focus({ preventScroll: true });
+        const btn = items[i] && items[i].querySelector('.clime-btn');
+        if (btn) btn.focus({ preventScroll: true });
       }
     }
 
