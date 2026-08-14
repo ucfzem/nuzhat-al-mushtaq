@@ -204,8 +204,11 @@
       const source = '<a href="' + part.shamelaPartLink + '" target="_blank" rel="noopener">الجزء ' +
         part.id + ' من ' + reg.title + ' ↗</a>';
 
-      const originalBlock = part.fullText
-        ? '<p><strong>النص الأصلي (من المصدر):</strong><br>' + part.fullText + '</p>' +
+      const paras = (part.fullText || '')
+        .split('\n').map(l => l.trim()).filter(Boolean)
+        .map(p => '<p>' + p + '</p>').join('');
+      const originalBlock = paras
+        ? '<p><strong>النص الأصلي (من المصدر):</strong></p>' + paras +
           '<div class="note">🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>'
         : '<p><strong>ملخص مؤقت:</strong><br>' + part.summary + '</p>' +
           '<div class="note">⚠️ النص الحرفي الكامل لهذا الجزء قيد الإضافة من الطبعة المحققة والمصادر الموثوقة. ' +
