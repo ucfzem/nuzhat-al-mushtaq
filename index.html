@@ -32,37 +32,14 @@
     }
     header h1 { margin: 0; font-size: 1.3rem; }
     header p { margin: 4px 0 0; font-size: .85rem; opacity: .85; }
-    .layout { display: flex; min-height: calc(100vh - 110px); }
-    nav.sidebar {
-      width: 320px; min-width: 260px;
-      background: var(--panel);
-      border-inline-end: 1px solid var(--line);
-      overflow-y: auto; padding: 10px;
-    }
-    nav.sidebar h2 {
-      font-size: .9rem; color: var(--gold); margin: 6px 8px;
-      letter-spacing: .3px;
-    }
-    .region-head {
-      width: 100%; text-align: right;
-      background: var(--green); color: #f6efdc;
-      border: none; border-radius: 6px; padding: 9px 12px;
-      font-family: inherit; font-weight: bold; font-size: .95rem;
-      cursor: pointer; margin: 4px 0;
-    }
-    .region-head:hover { filter: brightness(1.1); }
-    .parts { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
-    .parts.open { max-height: 460px; overflow-y: auto; }
-    .part-btn {
-      display: block; width: 100%; text-align: right;
-      background: transparent; border: 1px solid transparent;
-      border-radius: 5px; padding: 6px 12px; margin: 1px 0;
-      font-family: inherit; font-size: .85rem; color: var(--ink);
-      cursor: pointer;
-    }
-    .part-btn:hover { background: #e9dcc0; }
-    .part-btn.active { background: var(--gold); color: #fff; font-weight: bold; }
     main { flex: 1; padding: 24px 30px; max-width: 900px; margin: 0 auto; }
+    .topnav { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .topnav button {
+      font-family: inherit; font-size: .82rem;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 5px 14px; cursor: pointer; color: var(--ink);
+    }
+    .topnav button:hover { background: var(--gold); color: #fff; }
     .card {
       background: #fffdf6;
       border: 1px solid var(--line);
@@ -112,13 +89,10 @@
       padding: 14px; border-top: 1px solid var(--line);
     }
     @media (max-width: 700px) {
-      .layout { flex-direction: column-reverse; }
-      nav.sidebar { width: 100%; max-height: 40vh; border-inline-end: none; border-bottom: 1px solid var(--line); }
       main { padding: 16px 12px; }
     }
     @media print {
-      nav.sidebar, .pager { display: none !important; }
-      .layout { display: block; }
+      .topnav, .pager { display: none !important; }
       main { padding: 0; }
     }
   </style>
@@ -130,14 +104,7 @@
     <p>للشريف الإدريسي — ٧ أقاليم × ١٠ أجزاء، بالترتيب الأصلي</p>
   </header>
 
-  <div class="layout">
-    <nav class="sidebar" aria-label="فهرس الأقاليم">
-      <h2>فهرس الأقاليم</h2>
-      <div id="toc"></div>
-    </nav>
-
-    <main id="content"></main>
-  </div>
+  <main id="content"></main>
 
   <footer>
     <p>📜 <b>نزهة المشتاق في اختراق الآفاق</b> — أبو عبد الله محمد بن محمد الإدريسي (٤٩٣–٥٦٠هـ / ١١٠٠–١١٦٥م)، أُنجز بتكليف من الملك روجر الثاني الصقلي نحو ٥٤٨هـ / ١١٥٤م.</p>
@@ -148,7 +115,6 @@
 
   <script src="./all-regions.js"></script>
   <script>
-    const tocEl = document.getElementById('toc');
     const contentEl = document.getElementById('content');
 
     if (typeof allRegionsData === 'undefined' || typeof IDRISI_META === 'undefined') {
@@ -160,41 +126,6 @@
     const META = IDRISI_META;
 
     function pad(n) { return String(n).padStart(2, '0'); }
-
-    function openRegion(ri, open) {
-      const parts = tocEl.children[ri * 2 + 1];
-      parts.classList.toggle('open', open);
-      tocEl.children[ri * 2].textContent = pad(REGIONS_DB[ri].id) + ' — ' + REGIONS_DB[ri].title + (open ? ' ▲' : ' ▼');
-    }
-
-    function buildToc() {
-      REGIONS_DB.forEach((reg, ri) => {
-        const head = document.createElement('button');
-        head.className = 'region-head';
-        head.textContent = pad(reg.id) + ' — ' + reg.title + ' ▼';
-        head.onclick = () => openRegion(ri, !tocEl.children[ri * 2 + 1].classList.contains('open'));
-        tocEl.appendChild(head);
-
-        const box = document.createElement('div');
-        box.className = 'parts';
-        reg.parts.forEach(part => {
-          const b = document.createElement('button');
-          b.className = 'part-btn';
-          b.dataset.r = reg.id;
-          b.dataset.p = part.id;
-          b.textContent = part.id + ' — ' + part.name;
-          b.onclick = () => show(reg.id, part.id);
-          box.appendChild(b);
-        });
-        tocEl.appendChild(box);
-      });
-    }
-
-    function markActive(regId, partId) {
-      document.querySelectorAll('.part-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.r == regId && btn.dataset.p == partId);
-      });
-    }
 
     function show(regId, partId) {
       const reg = REGIONS_DB.find(r => r.id == regId);
@@ -218,6 +149,7 @@
           '🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>';
 
       contentEl.innerHTML =
+        '<div class="topnav"><button id="homeBtn" type="button">🏠 القائمة الرئيسية</button></div>' +
         '<div class="card">' +
           '<div class="kicker">' + reg.title + ' · ' + part.name + '</div>' +
           '<h2>' + part.name + '</h2>' +
@@ -235,10 +167,7 @@
 
       if (prev) document.getElementById('prevBtn').onclick = () => show(reg.id, prev.id);
       if (next) document.getElementById('nextBtn').onclick = () => show(reg.id, next.id);
-
-      const ri = REGIONS_DB.findIndex(r => r.id == regId);
-      REGIONS_DB.forEach((_, i) => openRegion(i, i === ri));
-      markActive(regId, partId);
+      document.getElementById('homeBtn').onclick = renderHome;
       window.scrollTo(0, 0);
     }
 
@@ -252,13 +181,13 @@
           '<p style="font-size:.85rem;color:#7a6a50">' + META.source + '</p>' +
           '<h2>اختر إقليماً للبدء</h2>' +
           '<div class="clime-list">' +
-            REGIONS_DB.map(r => '<button onclick="show(' + r.id + ', ' + r.parts[0].id + ')">' + pad(r.id) + ' — ' + r.title + '</button>').join('') +
+            REGIONS_DB.map(r => '<button type="button">' + pad(r.id) + ' — ' + r.title + '</button>').join('') +
           '</div>' +
         '</div>';
-      REGIONS_DB.forEach((_, i) => openRegion(i, false));
+      const btns = contentEl.querySelectorAll('.clime-list button');
+      REGIONS_DB.forEach((r, i) => { btns[i].onclick = () => show(r.id, r.parts[0].id); });
     }
 
-    buildToc();
     renderHome();
     }
   </script>
