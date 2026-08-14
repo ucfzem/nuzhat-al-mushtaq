@@ -145,11 +145,11 @@
 
   <script src="./all-regions.js"></script>
   <script>
-    const toc = document.getElementById('toc');
-    const content = document.getElementById('content');
+    const tocEl = document.getElementById('toc');
+    const contentEl = document.getElementById('content');
 
     if (typeof allRegionsData === 'undefined' || typeof IDRISI_META === 'undefined') {
-      content.innerHTML =
+      contentEl.innerHTML =
         '<div class="home"><p class="empty">⚠️ خطأ: لم يتم تحميل ملف البيانات all-regions.js.<br>' +
         'تأكد من رفعه في نفس مجلد index.html.</p></div>';
     } else {
@@ -158,13 +158,10 @@
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
-    const toc = document.getElementById('toc');
-    const content = document.getElementById('content');
-
     function openRegion(ri, open) {
-      const parts = toc.children[ri * 2 + 1];
+      const parts = tocEl.children[ri * 2 + 1];
       parts.classList.toggle('open', open);
-      toc.children[ri * 2].textContent = pad(REGIONS_DB[ri].id) + ' — ' + REGIONS_DB[ri].title + (open ? ' ▲' : ' ▼');
+      tocEl.children[ri * 2].textContent = pad(REGIONS_DB[ri].id) + ' — ' + REGIONS_DB[ri].title + (open ? ' ▲' : ' ▼');
     }
 
     function buildToc() {
@@ -172,8 +169,8 @@
         const head = document.createElement('button');
         head.className = 'region-head';
         head.textContent = pad(reg.id) + ' — ' + reg.title + ' ▼';
-        head.onclick = () => openRegion(ri, !toc.children[ri * 2 + 1].classList.contains('open'));
-        toc.appendChild(head);
+        head.onclick = () => openRegion(ri, !tocEl.children[ri * 2 + 1].classList.contains('open'));
+        tocEl.appendChild(head);
 
         const box = document.createElement('div');
         box.className = 'parts';
@@ -182,11 +179,11 @@
           b.className = 'part-btn';
           b.dataset.r = reg.id;
           b.dataset.p = part.id;
-          b.textContent = '§' + part.id + ' — ' + part.name;
+          b.textContent = part.id + ' — ' + part.name;
           b.onclick = () => show(reg.id, part.id);
           box.appendChild(b);
         });
-        toc.appendChild(box);
+        tocEl.appendChild(box);
       });
     }
 
@@ -207,13 +204,18 @@
       const source = '<a href="' + part.shamelaPartLink + '" target="_blank" rel="noopener">الجزء ' +
         part.id + ' من ' + reg.title + ' ↗</a>';
 
-      content.innerHTML =
+      const originalBlock = part.fullText
+        ? '<p><strong>النص الأصلي (من المصدر):</strong><br>' + part.fullText + '</p>' +
+          '<div class="note">🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>'
+        : '<p><strong>ملخص مؤقت:</strong><br>' + part.summary + '</p>' +
+          '<div class="note">⚠️ النص الحرفي الكامل لهذا الجزء قيد الإضافة من الطبعة المحققة والمصادر الموثوقة. ' +
+          '🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>';
+
+      contentEl.innerHTML =
         '<div class="card">' +
           '<div class="kicker">' + reg.title + ' · ' + part.name + '</div>' +
           '<h2>' + part.name + '</h2>' +
-          '<p>' + part.summary + '</p>' +
-          '<div class="note">⚠️ تنويه: النص الحرفي الكامل لهذا الجزء قيد الإضافة من الطبعة المحققة والمصادر الموثوقة. ' +
-          '🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>' +
+          originalBlock +
         '</div>' +
         '<div class="card modern">' +
           '<h2>🧭 عرض حديث <small>(مستوحى من منهج الإدريسي، وليس من الكتاب الأصلي)</small></h2>' +
@@ -235,7 +237,7 @@
     }
 
     function renderHome() {
-      content.innerHTML =
+      contentEl.innerHTML =
         '<div class="home">' +
           '<h1>📜 نزهة المشتاق في اختراق الآفاق</h1>' +
           '<p class="desc">من أعظم كتب الجغرافيا في التاريخ الإسلامي، أُلّف بتكليف من الملك روجر الثاني في صقلية نحو سنة ٥٤٨هـ / ١١٥٤م. ' +
