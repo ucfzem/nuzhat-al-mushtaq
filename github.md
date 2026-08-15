@@ -335,3 +335,13 @@
 - **التحقق:** jsdom 17/17 (لا نقاط ثيم، داكن افتراضي، تبديل فاتح/داكن + الأيقونة، 114 اسماً، تبديل اللغة→`dir=rtl`، خيارات القارئ، تسميات السور FR/AR، عناصر tv-focusable). النشر 200 وتحقق: `theme-dots: 0`، وجود `themeToggle`/`light-mode`/«Fichier non disponible».
 - **الإصدار:** commit `65aea3a` — "Audio error handling + dark brown/gold default with light mode (from user fixes)".
 - **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+## 32. quran-reader: إصلاح 4 أخطاء منطقية/حواف (تقرير المستخدم)
+
+- **الطلب:** المستخدم رصد 4 أخطاء: (1) عند انتهاء السورة لا ينتقل تلقائياً للتالية؛ (2) تبديل اللغة يعيد تصفير القوائم (يُفقد القارئ/السورة قيد التشغيل)؛ (3) التنقل التلفزيوني يخطف أسهم ↑/↓ حتى فوق `<select>` فيمنع تصفّح الخيارات؛ (4) `prevBtn` بشرط `selectedIndex > 1` لا يسمح بالعودة للسورة الأولى (فهرس 1).
+- **الإصلاحات:** (1) `audioPlayer` `ended` → `updatePlayState(false)` ثم تقدم للفهرس التالي مع التفاف للسورة الأولى عند الأخيرة. (2) عند تبديل اللغة يُحفظ `currentServer` (رابط URL — ثابت بين اللغتين بينما الفهرس يختلف لأنه ترتيب أبجدي مختلف) + `surahSelect.value`، وبعد `loadReciters()` يُستعاد القارئ بالبحث `findIndex(item.server === savedServer)` ويُعاد بناء السور دون إعادة تشغيل الصوت (استخراج `populateSurahOptions(surahIds, selectedId)`). (3) في keydown: إن كان النشط `<select>` أو range → `return` (يعمل التنقل الأصلي للخيارات بالأسهم). (4) `prevBtn`/`nextBtn`: التفاف (الأولى→الأخيرة / الأخيرة→الأولى) مع قفل عند عدم وجود خيارات؛ الوصول للسورة الأولى (فهرس 1) أصبح ممكناً.
+- **التحقق:** jsdom **35/35** (فشلان أوليان كانا توقعاً خاطئاً في الاختبار نفسه وصُحّحا): ثيمات، 114 اسماً، تسطيح الإصدارات (3 إصدارات+placeholder)، تسميات السور، next/prev مع الالتفاف، auto-advance عند `ended` (مع `play()` مقلّد)، الحفاظ على التحديد عند تبديل اللغة (مرتين ذهاباً وإياباً)، عدم خطف أسهم `<select>` + بقاء التركيز، انتقال التركيز من الأزرار، عناصر tv-focusable. الاختبار يقلّد `window.fetch` قبل تنفيذ السكربت (فجلسة jsdom بلا fetch).
+- **الإصدار:** commit `b7e5747` — "Fix 4 UX bugs: auto-advance on ended, preserve selection on lang switch, D-pad on native selects, prev/next wraparound".
+- **النشر:** GitHub Pages 200 وتحقق وجود `populateSurahOptions`/`savedServer`/حارس `<select>`/الالتفاف. landing/works/quran-majeed-v3 دون تغيير.
+- **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
