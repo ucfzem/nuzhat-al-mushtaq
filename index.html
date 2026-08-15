@@ -16,7 +16,27 @@
       --green: #1f5c46;
       --gold: #a9792f;
       --line: #d8c9a8;
+      --card: #fffdf6;
+      --modern-card: #f1f6f2;
+      --accent-text: #7c5620;
+      --muted: #7a6a50;
+      --header-text: #f5eeda;
+      --focus: #ffd166;
       --content-font-size: 1rem;
+    }
+    [data-theme="dark"] {
+      --ink: #ece4d3;
+      --paper: #16130e;
+      --panel: #241f16;
+      --green: #4e9a73;
+      --gold: #d3a34a;
+      --line: #3a3225;
+      --card: #1e1912;
+      --modern-card: #131b17;
+      --accent-text: #d9b977;
+      --muted: #9a8a6c;
+      --header-text: #f5eeda;
+      --focus: #ffd166;
     }
     * { box-sizing: border-box; }
     body {
@@ -27,10 +47,17 @@
       line-height: 1.9;
     }
     header {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
       background: var(--green);
-      color: #f5eeda;
+      color: var(--header-text);
       padding: 14px 20px;
     }
+    #themeToggle {
+      flex-shrink: 0; width: 42px; height: 42px; border-radius: 8px; cursor: pointer;
+      font-size: 1.2rem; line-height: 1;
+      background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35); color: #fff;
+    }
+    #themeToggle:hover { background: rgba(255,255,255,.28); }
     header h1 { margin: 0; font-size: 1.3rem; }
     header p { margin: 4px 0 0; font-size: .85rem; opacity: .85; }
     main { flex: 1; padding: 24px 30px; max-width: 900px; margin: 0 auto; }
@@ -55,29 +82,29 @@
     .index-input {
       width: 100%; padding: 14px; font-size: 1.1rem;
       border: 1px solid var(--line); border-radius: 8px;
-      background: #fffdf6; color: var(--ink); font-family: inherit;
+      background: var(--card); color: var(--ink); font-family: inherit;
       margin-bottom: 20px; box-sizing: border-box;
     }
     .index-results { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
     .index-item {
       text-align: right; padding: 12px; border-radius: 6px;
-      border: 1px solid var(--line); background: #fffdf6;
+      border: 1px solid var(--line); background: var(--card);
       font-family: inherit; color: var(--ink); cursor: pointer;
     }
     .index-item:hover { background: var(--gold); color: #fff; }
     .index-item strong { color: var(--gold); }
     .index-item:hover strong { color: #fff; }
     .card {
-      background: #fffdf6;
+      background: var(--card);
       border: 1px solid var(--line);
       border-inline-start: 4px solid var(--gold);
       border-radius: 8px; padding: 18px 22px; margin-bottom: 16px;
     }
-    .card h2 { margin: 0 0 8px; font-size: 1.25rem; color: #7c5620; }
-    .kicker { font-size: .8rem; color: #7a6a50; margin-bottom: 6px; }
+    .card h2 { margin: 0 0 8px; font-size: 1.25rem; color: var(--accent-text); }
+    .kicker { font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
     .modern {
       border-inline-start-color: var(--green);
-      background: #f1f6f2;
+      background: var(--modern-card);
     }
     .modern h2 { color: var(--green); font-size: 1.05rem; }
     .pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
@@ -88,10 +115,10 @@
     }
     .pager button:hover { filter: brightness(1.1); }
     .pager button:disabled { opacity: .35; cursor: default; }
-    .pager span { align-self: center; font-size: .85rem; color: #7a6a50; }
+    .pager span { align-self: center; font-size: .85rem; color: var(--muted); }
     .home { text-align: center; padding: 30px 10px; }
-    .empty { color: #7a6a50; font-style: italic; font-size: 1rem; }
-    .home h1 { color: #7c5620; font-size: 1.8rem; }
+    .empty { color: var(--muted); font-style: italic; font-size: 1rem; }
+    .home h1 { color: var(--accent-text); font-size: 1.8rem; }
     .home .desc { max-width: 640px; margin: 12px auto; font-size: .95rem; }
     .clime-list {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -107,7 +134,7 @@
     .clime-parts {
       max-height: 0; overflow: hidden;
       transition: max-height .25s ease;
-      background: #fffdf6;
+      background: var(--card);
     }
     .clime-parts.open {
       max-height: 420px; overflow-y: auto;
@@ -122,12 +149,12 @@
     }
     .clime-part:hover { background: var(--gold); color: #fff; }
     button:focus, a:focus {
-      outline: 3px solid #ffd166;
+      outline: 3px solid var(--focus);
       outline-offset: 3px;
       box-shadow: 0 0 0 8px rgba(255, 209, 102, .35), 0 0 24px 6px rgba(255, 209, 102, .6);
     }
     footer {
-      text-align: center; font-size: .78rem; color: #7a6a50;
+      text-align: center; font-size: .78rem; color: var(--muted);
       padding: 14px; border-top: 1px solid var(--line);
     }
     @media (min-width: 1400px) {
@@ -153,24 +180,52 @@
       main { padding: 0; }
     }
   </style>
+  <script id="themeBoot">
+    (function () {
+      var t = 'dark';
+      try {
+        t = localStorage.getItem('idrisi_theme') ||
+          (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
 
   <header>
-    <h1>📜 نزهة المشتاق في اختراق الآفاق</h1>
-    <p>للشريف الإدريسي — 7 أقاليم × 10 أجزاء، بالترتيب الأصلي</p>
+    <div>
+      <h1>📜 نزهة المشتاق في اختراق الآفاق</h1>
+      <p>للشريف الإدريسي — 7 أقاليم × 10 أجزاء، بالترتيب الأصلي</p>
+    </div>
+    <button id="themeToggle" aria-label="تبديل الوضع النهاري/الليلي" title="تبديل الوضع النهاري/الليلي">🌙</button>
   </header>
 
   <main id="content"></main>
 
   <footer>
     <p>📜 <b>نزهة المشتاق في اختراق الآفاق</b> — أبو عبد الله محمد بن محمد الإدريسي (493–560هـ / 1100–1165م)، أُنجز بتكليف من الملك روجر الثاني الصقلي نحو 548هـ / 1154م.</p>
-    <p>الأجزاء التي لم يُكتمل نصها الحرفي موسومة «قيد الإضافة»؛ لا يُختلق فيها أي نص غير مؤكد.</p>
+    <p>النص الحرفي الكامل منقول في جميع الأجزاء السبعين حسب الطبعة المحققة؛ لا يُختلق في أي جزء نص غير مؤكد، والعرض الحديث وسم ببيان أنه ليس من الكتاب الأصلي.</p>
   </footer>
 
   <script src="./all-regions.js"></script>
   <script>
     const contentEl = document.getElementById('content');
+
+    function setupThemeToggle() {
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+      const getTheme = () => document.documentElement.getAttribute('data-theme') || 'dark';
+      const update = () => { btn.textContent = getTheme() === 'dark' ? '☀️' : '🌙'; };
+      update();
+      btn.addEventListener('click', () => {
+        const next = getTheme() === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        update();
+        try { localStorage.setItem('idrisi_theme', next); } catch (e) {}
+      });
+    }
+    setupThemeToggle();
 
     if (typeof allRegionsData === 'undefined' || typeof IDRISI_META === 'undefined') {
       contentEl.innerHTML =
