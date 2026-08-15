@@ -233,3 +233,14 @@
 - **التحقق:** اختبارات jsdom الـ 44 كلها ناجحة بعد التنظيف، والمنصات الثلاث تقدم ملف البيانات الجديد (132,643 بايت، صفر مراجع شاملة) وصفحات UI نظيفة (صفر مراجع).
 - **الإصدار:** commit `5fe00ae` — "Remove all Shamela references from data file (shamelaPartLink, originalText, PENDING_TEXT, source strings); texts remain fully embedded and verified".
 - **النشر:** GitHub Pages تلقائياً. Vercel نُشر (اكتمل رغم انقطاع CLI بالـ timeout) → HTTP 200. Cloudflare Worker **Current Version ID: `fc217503-7bd5-4725-bdcf-09d938e0e8ac`** → HTTP 200.
+
+## 22. إضافة رابط «Nuzhat al-Mushtaq» إلى صفحة الأعمال (works)
+
+- **الطلب:** إضافة بطاقة Nuzhat al-Mushtaq إلى القسم المفتوح (غير المقفول) في صفحة `ucfzem.github.io/works`، بفتح الرابط في تبويب جديد (`target="_blank"` و`rel="noopener noreferrer"`)، مع مطابقة بنية/أنماط البطاقات المفتوحة الحالية.
+- **التحقق الأمني (من المستخدم):** لا مخاطر — `rel="noopener noreferrer"` يمنع reverse tabnabbing، والموقعان كلاهما للمستخدم.
+- **الملف:** `works/index.html` في مستودع `ucfzem/ucfzem.github.io` (تم الاستنساخ الضحل إلى `/tmp/opencode/ucfzem-site`، وتطابق الملف المحلي مع النسخة الحية).
+- **البنية:** القسم المفتوح (`#publicProjects`) يُبنى ديناميكياً من مصفوفة `publicProjects` عبر `renderPublic()` (وليس HTML ثابت) — لذلك أُضيف مدخل جديد للمصفوفة + سمة `newTab: true`، وحدّثت `renderPublic()` لإخراج `target="_blank" rel="noopener noreferrer"` فقط عند `newTab` (بقيت بقية البطاقات دون تغيير).
+- **التغييرات:** (1) مدخل `{ num: 12, emoji: "🌍", name: "Nuzhat al-Mushtaq", tag: "Geography", icon: null, url: "https://nuzhat-al-mushtaq.vercel.app/", newTab: true }`؛ (2) تحديث `renderPublic()` الشرطي؛ (3) العنوان الفرعي «11 projets publics» ← «12 projets publics»؛ (4) إضافة `position 15` في JSON-LD.
+- **التحقق (jsdom):** 12 بطاقة عامة، بطاقة Nuzhat تحمل `href=…/nuzhat-al-mushtaq.vercel.app/` و`target="_blank"` و`rel="noopener noreferrer"` و`class="card"` و`num 12` و`emoji 🌍` و`tag Geography`، والبطاقات الأخرى بلا `target`/`rel`.
+- **الإصدار:** commit `b14f2c8` في `ucfzem/ucfzem.github.io` — "Add Nuzhat al-Mushtaq to public projects (opens in new tab)".
+- **النشر/التحقق المباشر:** `https://ucfzem.github.io/works/` HTTP 200 بعد الانتشار، ويحتوي المدخل في المصفوفة وJSON-LD و«12 projets publics».
