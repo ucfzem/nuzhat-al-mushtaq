@@ -286,3 +286,12 @@
 - **البطاقة:** في `works/index.html` حاوية `#publicProjects` بُدئت من المشاريع العامة فقط: `{ num: 13, emoji:"🎮", name:"SavoirsEnJouant", tag:"Kids Learning", url:"https://ucfzem.github.io/childsgame/", newTab:true }` — يولّد `target="_blank" rel="noopener noreferrer"`، + إدخال JSON-LD position 16 + «13 projets publics». تحقق jsdom: 13 بطاقات، الرابط والسمتان صحيحتان.
 - **النشر:** commit `d5bd5c7` — "Add SavoirsEnJouant kids game to public projects (new tab)". GitHub Pages انتشرت بعد ~30 ثانية: `https://ucfzem.github.io/childsgame/` HTTP 200، و`https://ucfzem.github.io/works/` يعرض البطاقة و«13 projets publics».
 - **الروابط:** اللعبة https://ucfzem.github.io/childsgame/ — الأعمال https://ucfzem.github.io/works/ — مصدر اللعبة https://github.com/ucfzem/ucfzem.github.io/blob/main/childsgame/index.html
+---
+
+## 27. ترقية childsgame إلى «SavoirsEnJouant Pro»
+
+- **الطلب:** نسخة «Pro» محسّنة — شاشة ترحيب، إعدادات (أصوات/اهتزاز/اتجاه)، تبديل ثيم، تصنيفات مفردات، نطق، أشرطة تقدّم، وسام نقاط، وتصحيح خطأ محتمل من إنشاء `new AudioContext()` في بداية السكربت (قد يعطّل JS على بعض المتصفحات/`file://`).
+- **التنفيذ:** استُبدل الملف بالكامل بالنسخة الجديدة مع إصلاحات: `getAudioCtx()` كسول + try/catch (لا يُنشأ قبل أول تفاعل)؛ `playSound` تتوقف آمنة عند غياب السياق؛ `id="vocab-cats"` أُضيف لفلتر التصنيف (كان JS يشير له دون وجوده → كان ينكسر على النقر)؛ قاعدة `.settings-overlay.hidden{display:none}` (المودال كان يظهر عند التحميل)؛ CSS لـ `.star-pop` (النجمة كانت غير مرئية)؛ ملاحة لوحة مفاتيح للعناصر المرئية فقط؛ غلافات `storeGet/storeSet/storeRemove` لكل localStorage (تنجو من الأصول المعتمة/الوضع الخاص)؛ تصحيح `toggleTheme` (كان يخزّن 'light' خطأ).
+- **الاختبار:** jsdom 21/21 ناجحة (تبويبات، نقاط، 4 أشرطة تقدّم، فلتر تصنيف، تبديل اتجاه، 15 قصة، إجابة خاطئة، جمل، نجمة، إعدادات فتح/غلق، ملاحة). فشل «direction toggle» الأول كان قيداً بيئياً فقط (jsdom `outside-only` لا يشغّل onclick المضمّن) — تعديل الاختبار لاستدعاء الدالة مباشرة.
+- **الإصدار:** commit `b2694ca` — "Upgrade childsgame to SavoirsEnJouant Pro (settings, theme, categories, speech, progress)".
+- **النشر:** GitHub Pages مباشرة: `https://ucfzem.github.io/childsgame/` HTTP 200 ويعرض «SavoirsEnJouant Pro» (welcome-overlay/settings/direction-toggle/vocab-cats/star-pop ×17). الملاحظة: القصص 6–15 مولّدة تلقائياً (5 أصلية + 10 مولّدة) كما ورد في النسخة المقدَّمة.
