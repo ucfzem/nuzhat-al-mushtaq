@@ -185,3 +185,13 @@
 - **GitHub Pages:** HTTP 200 بدون مراجع شاملة.
 - **الحالة النهائية:** المنصات الثلاث نشطة ومتطابقة المحتوى (الواجهة النظيفة + الفهارس + أزرار الخط + الاستئناف)، و44 اختباراً jsdom ناجحاً.
 - **ملاحظة:** كل المراجع سابقة (sections 16–18) وُثقت؛ تُحفظ محادثة هذا الجزء في هذا الملف كنسخة احتياطية.
+
+## 19. إزالة كل أثر للمكتبة الشاملة من البيانات (استقلال تام عن الشاملة)
+
+- **الطلب:** «It means there's no need of Shamela» — إزالة كل مرجع للشاملة من الموقع والبيانات نهائياً.
+- **التحقق المسبق:** الواجهة تعرض فقط `fullText`/`summary`/`modernView`/`id`/`name`؛ لذا كانت `shamelaPartLink` (70) و`originalText` (70، نص موضعي مكرر) و`PENDING_TEXT` و`region.shamelaLink` و`IDRISI_META.shamelaUrl` و`META.source` حقولاً ميتة غير معروضة.
+- **الإزالة:** سكربت `strip_shamela.js`: حذف حقول `shamelaPartLink` و`originalText` من كل جزء، و`shamelaLink` من كل إقليم، و`shamelaUrl` من `IDRISI_META`، وثابت `PENDING_TEXT`؛ وأُعيدت صياغة تعليقات الرأس و`IDRISI_META.source` و`region.source` بدون ذكر الشاملة.
+- **النتيجة:** `grep -ci shamela|الشاملة` في `all-regions.js` = 0، والملف يتحقق نحويّاً: 7 أقاليم، 70 جزءاً، كلها بـ `fullText` كامل (صفر ناقص). الحجم: 158,632 ← 132,643 بايت.
+- **التحقق:** اختبارات jsdom الـ 44 كلها ناجحة بعد التنظيف، والمنصات الثلاث تقدم ملف البيانات الجديد (132,643 بايت، صفر مراجع شاملة) وصفحات UI نظيفة (صفر مراجع).
+- **الإصدار:** commit `5fe00ae` — "Remove all Shamela references from data file (shamelaPartLink, originalText, PENDING_TEXT, source strings); texts remain fully embedded and verified".
+- **النشر:** GitHub Pages تلقائياً. Vercel نُشر (اكتمل رغم انقطاع CLI بالـ timeout) → HTTP 200. Cloudflare Worker **Current Version ID: `fc217503-7bd5-4725-bdcf-09d938e0e8ac`** → HTTP 200.
