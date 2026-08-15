@@ -259,3 +259,11 @@
 - **الإصدار:** commit `23fd30b` — "Add dark/light mode toggle and correct footer completeness note".
 - **النشر:** GitHub Pages HTTP 200 فيه `themeToggle`×4 و`data-theme`×4؛ Vercel نُشر عبر `nohup` (CLI علّق بسبب تدهور بيئة الحاوية — النشر كان عبر عملية مفصولة وقراءة مخرجاتها من ملف، Ready in 7s) → HTTP 200 وفيه `themeToggle`×4 و`data-theme`×4.
 - **البيئة:** تدهورت بيئة الحاوية أثناء الجلسة (أمر `ps` يفشل بـ «Unable to get system boot time»، وعمليات node لا تُختتم وتعلّق أداة الصدفة رغم إنتاج المخرجات) — العمل بالملفات الملتقطة من عمليات `nohup` والاستقصاء اللاحق. Cloudflare في انتظار إعادة لصق الـ API token (لم يُحفظ على القرص).
+
+## 24. استكمال نشر Cloudflare + القيود البيئية
+
+- **إعادة بناء الـ Worker:** أُعيد بناء `worker.js` (1,765,795 بايت) من `index.html` و`all-regions.js` الحاليين عبر `build-worker.js` — يتضمن الوضع الليلي والبيانات الكاملة.
+- **النشر:** token جديد `cfut_…` أُعيد لصقه من المستخدم → `wrangler deploy` عبر `nohup`؛ عميل wrangler علّق بعد سطر «Total Upload» (مشكلة بيئة العقدة/الشبكة) لكن الرفع وصل الخادم.
+- **التحقق المباشر:** `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev/` HTTP 200 وفيه `themeToggle`×4 و`data-theme`×4.
+- **مطابقة البيانات:** ملف البيانات على المنصات الثلاث متطابق بايتاً ببايت (md5 `3759c4151f2eb88307caccb934333ab2`) مع الملف المحلي — اكتمال النص ثابت على كل منصّة.
+- **ملاحظات الأمان:** tokens تبقى واحدة-تلو-الأخرى ولا تُحفظ أو تُلتزم أبداً؛ token `vcp_…` الذي لُصق خلال هذه الجلسة غير مطلوب (Vercel كان منشوراً بالفعل) فلم يُستخدم.
