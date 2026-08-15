@@ -177,3 +177,11 @@
 - **التحقق:** لا بقايا لـ `shamela`/«المكتبة»/«من المصدر»/`META.source` في index.html (grep = صفر نتائج)، وكل اختبارات jsdom الـ 44 ناجحة (17+3+24).
 - **الإصدار:** commit `5421d5b` — "Remove Shamela citation boxes and source links (all 70 parts verified against live text first)" (نُشر على GitHub Pages).
 - **النشر:** GitHub Pages جاهز. Worker `worker.js` أُعيد بناؤه (117,785 بايت) في انتظار token Cloudflare؛ Vercel في انتظار token.
+
+## 18. استكمال النشر على المنصات الثلاث (الأخيرة)
+
+- **Vercel:** token جديد (`vcp_…`) → `vercel --prod --yes --token` → «Ready in 6s» → `https://nuzhat-al-mushtaq.vercel.app` HTTP 200؛ 0 مرجع شاملة؛ الميزات الجديدة حاضرة؛ ملف البيانات 158,632 بايت.
+- **Cloudflare:** token جديد (`cfut_…`) → `wrangler deploy` → **Current Version ID: `d9bcef53-8568-42f5-87dd-19bcf6615f1e`** → `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev` HTTP 200؛ 0 مرجع شاملة؛ الميزات الجديدة حاضرة؛ ملف البيانات 158,632 بايت.
+- **GitHub Pages:** HTTP 200 بدون مراجع شاملة.
+- **الحالة النهائية:** المنصات الثلاث نشطة ومتطابقة المحتوى (الواجهة النظيفة + الفهارس + أزرار الخط + الاستئناف)، و44 اختباراً jsdom ناجحاً.
+- **ملاحظة:** كل المراجع سابقة (sections 16–18) وُثقت؛ تُحفظ محادثة هذا الجزء في هذا الملف كنسخة احتياطية.
