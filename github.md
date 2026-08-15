@@ -386,3 +386,17 @@
 - **Déploiement:** HTTP 200, marqueurs dans le HTML servi : « 14 projets publics », « Quran Reader » (x3), « quran-reader/ » (x2), « 🎧 ».
 - **Commit:** `2236267` sur ucfzem/ucfzem.github.io (main).
 - **Liens:** https://ucfzem.github.io/works/ — source https://github.com/ucfzem/ucfzem.github.io/blob/main/works/index.html
+---
+
+### §36 — Polissage mobile Walkman : pickers natifs sombres, auto-blur, playbackState, ellipsis (2026-08-15)
+
+- **CSS — pickers natifs sombres:** `.select-box { color-scheme: dark; appearance: none; -webkit-appearance: none; }` (le `color-scheme` force les menus OS Android/iOS en sombre), `option` sombre explicite `#1f2937`/`#f3f4f6` ; override **`body.light-mode .select-box { color-scheme: light; }`** + option blanc/noir pour ne pas casser le thème clair.
+- **CSS — ellipsis:** `.track-subtitle` (displayReciter) reçoit `white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block;` (`.track-title` l'avait déjà) — les longs titres arabes ne débordent plus sur mobile.
+- **JS — auto-fermeture picker:** `e.target.blur()` ajouté dans les handlers `change` de `surahSelect` (avant le retour anticipé, donc aussi sur le placeholder) et de `reciterSelect` (branches vide + sélection) — ferme la roue OS immédiatement.
+- **JS — playbackState Media Session:** `navigator.mediaSession.playbackState = 'playing'/'paused'` dans les listeners play/pause.
+- **JS — is-playing:** classe `is-playing` sur `.walkman-container` au play, retirée au pause (référence `walkmanContainer = document.querySelector('.walkman-container')`).
+- **Rappel des IDs réels (audit anti-casse):** `audioPlayer`, `displaySurah`, `displayReciter`, `surahSelect`, `reciterSelect`, `prevBtn`, `nextBtn`, `.walkman-container` — tous déjà alignés dans le code existant.
+- **Vérification:** jsdom **58/58** (nouvelles assertions : blur après change, playbackState playing/paused, wake lock re-request). 
+- **Déploiement:** HTTP 200, marqueurs servis : `color-scheme: dark` (1), `color-scheme: light` (1), `e.target.blur()` (x3), `playbackState` (x2), `is-playing` (x2), `track-subtitle` (x2), `settingsShortcut` (1), `wakeLock` (x7).
+- **Commits:** `a18e9c0` (Wake Lock + lien settings Chrome) puis `5a313b7` (polissage mobile).
+- **Liens:** https://ucfzem.github.io/quran-reader/ — source https://github.com/ucfzem/quran-reader
