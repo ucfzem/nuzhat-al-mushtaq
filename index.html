@@ -16,6 +16,7 @@
       --green: #1f5c46;
       --gold: #a9792f;
       --line: #d8c9a8;
+      --content-font-size: 1rem;
     }
     * { box-sizing: border-box; }
     body {
@@ -33,13 +34,31 @@
     header h1 { margin: 0; font-size: 1.3rem; }
     header p { margin: 4px 0 0; font-size: .85rem; opacity: .85; }
     main { flex: 1; padding: 24px 30px; max-width: 900px; margin: 0 auto; }
-    .topnav { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .topnav { display: flex; justify-content: flex-end; margin-bottom: 10px; align-items: center; gap: 6px; flex-wrap: wrap; }
     .topnav button {
       font-family: inherit; font-size: .82rem;
       background: var(--panel); border: 1px solid var(--line);
       border-radius: 6px; padding: 5px 14px; cursor: pointer; color: var(--ink);
     }
     .topnav button:hover { background: var(--gold); color: #fff; }
+    .topnav .font-row { display: flex; gap: 4px; margin-inline-end: auto; }
+    .card p { font-size: var(--content-font-size); }
+    .modern p { font-size: var(--content-font-size); }
+    .index-input {
+      width: 100%; padding: 14px; font-size: 1.1rem;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: #fffdf6; color: var(--ink); font-family: inherit;
+      margin-bottom: 20px; box-sizing: border-box;
+    }
+    .index-results { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
+    .index-item {
+      text-align: right; padding: 12px; border-radius: 6px;
+      border: 1px solid var(--line); background: #fffdf6;
+      font-family: inherit; color: var(--ink); cursor: pointer;
+    }
+    .index-item:hover { background: var(--gold); color: #fff; }
+    .index-item strong { color: var(--gold); }
+    .index-item:hover strong { color: #fff; }
     .card {
       background: #fffdf6;
       border: 1px solid var(--line);
@@ -57,7 +76,7 @@
     .note {
       background: #fbf0dc;
       border: 1px dashed var(--gold);
-      border-radius: 6px; padding: 8px 12px; font-size: .83rem;
+      border-radius: 6px; padding: 8px 12px; font-size: calc(var(--content-font-size, 1rem) * 0.83);
       margin-top: 10px;
     }
     .note a { color: #6d4a10; }
@@ -165,7 +184,32 @@
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
-    const FOCUSABLE_SEL = '#content button:not(:disabled), #content a[href]';
+    let currentFontSize = 1;
+    try { currentFontSize = parseFloat(localStorage.getItem('idrisi_font_size')) || 1; } catch (e) {}
+
+    function applyFontSize() {
+      document.documentElement.style.setProperty('--content-font-size', currentFontSize + 'rem');
+      try { localStorage.setItem('idrisi_font_size', String(currentFontSize)); } catch (e) {}
+    }
+
+    function fontControlsHTML() {
+      return '<span class="font-row">' +
+        '<button type="button" id="fontDecBtn" title="تصغير الخط">A−</button>' +
+        '<button type="button" id="fontResetBtn" title="الخط الافتراضي">A</button>' +
+        '<button type="button" id="fontIncBtn" title="تكبير الخط">A+</button>' +
+      '</span>';
+    }
+
+    function setupFontControls() {
+      const dec = document.getElementById('fontDecBtn');
+      const reset = document.getElementById('fontResetBtn');
+      const inc = document.getElementById('fontIncBtn');
+      if (dec) dec.onclick = () => { if (currentFontSize > 0.8) { currentFontSize = Math.round((currentFontSize - 0.1) * 10) / 10; applyFontSize(); } };
+      if (reset) reset.onclick = () => { currentFontSize = 1; applyFontSize(); };
+      if (inc) inc.onclick = () => { if (currentFontSize < 1.6) { currentFontSize = Math.round((currentFontSize + 0.1) * 10) / 10; applyFontSize(); } };
+    }
+
+    const FOCUSABLE_SEL = '#content button:not(:disabled), #content a[href], #content input';
 
     function getFocusables() {
       return Array.from(document.querySelectorAll(FOCUSABLE_SEL))
@@ -210,16 +254,26 @@
     }
 
     function focusFirstControl() {
+      const input = document.getElementById('indexSearchInput');
+      if (input) { input.focus({ preventScroll: true }); return; }
       const home = document.getElementById('homeBtn');
       if (home) { home.focus({ preventScroll: true }); return; }
+      const firstClime = document.querySelector('.clime-btn');
+      if (firstClime) { firstClime.focus({ preventScroll: true }); return; }
       const next = document.getElementById('nextBtn');
       if (next && !next.disabled) { next.focus({ preventScroll: true }); return; }
+      const prev = document.getElementById('prevBtn');
+      if (prev && !prev.disabled) { prev.focus({ preventScroll: true }); return; }
       const items = getFocusables();
       if (items.length) items[0].focus({ preventScroll: true });
     }
 
     document.addEventListener('keydown', (e) => {
       const key = e.key;
+      const cur = document.activeElement;
+      if (cur && (cur.tagName === 'INPUT' || cur.tagName === 'TEXTAREA')) {
+        if (key.startsWith('Arrow') || key === 'Enter' || key === 'Select' || key === 'OK' || e.keyCode === 13) return;
+      }
       if (key === 'ArrowUp' || key === 'ArrowDown' || key === 'ArrowLeft' || key === 'ArrowRight') {
         e.preventDefault();
         const target = spatialMove(key);
@@ -231,7 +285,6 @@
         else if (key === 'ArrowLeft') window.scrollBy({ left: -vw * 0.5, behavior: 'smooth' });
         else if (key === 'ArrowRight') window.scrollBy({ left: vw * 0.5, behavior: 'smooth' });
       } else if (key === 'Enter' || key === 'Select' || key === 'OK' || e.keyCode === 13) {
-        const cur = document.activeElement;
         if (cur && (cur.tagName === 'BUTTON' || cur.tagName === 'A')) {
           e.preventDefault();
           cur.click();
@@ -239,7 +292,13 @@
       }
     });
 
-    function show(regId, partId) {
+    function show(regId, partId, saveHistory) {
+      if (saveHistory !== false) {
+        try {
+          localStorage.setItem('idrisi_last_reg', String(regId));
+          localStorage.setItem('idrisi_last_part', String(partId));
+        } catch (e) {}
+      }
       const reg = REGIONS_DB.find(r => r.id == regId);
       if (!reg) return renderHome();
       const part = reg.parts.find(p => p.id == partId);
@@ -261,7 +320,10 @@
           '🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>';
 
       contentEl.innerHTML =
-        '<div class="topnav"><button id="homeBtn" type="button">🏠 القائمة الرئيسية</button></div>' +
+        '<div class="topnav">' + fontControlsHTML() +
+          '<button id="indexBtn" type="button">🔎 الفهرس</button>' +
+          '<button id="homeBtn" type="button">🏠 القائمة الرئيسية</button>' +
+        '</div>' +
         '<div class="card">' +
           '<div class="kicker">' + reg.title + ' · ' + part.name + '</div>' +
           '<h2>' + part.name + '</h2>' +
@@ -279,7 +341,9 @@
 
       if (prev) document.getElementById('prevBtn').onclick = () => show(reg.id, prev.id);
       if (next) document.getElementById('nextBtn').onclick = () => show(reg.id, next.id);
+      document.getElementById('indexBtn').onclick = renderIndexPage;
       document.getElementById('homeBtn').onclick = renderHome;
+      setupFontControls();
       setTimeout(focusFirstControl, 0);
       window.scrollTo(0, 0);
     }
@@ -306,6 +370,9 @@
 
     function renderHome() {
       contentEl.innerHTML =
+        '<div class="topnav">' + fontControlsHTML() +
+          '<button id="indexBtn" type="button">🔎 الفهرس</button>' +
+        '</div>' +
         '<div class="home">' +
           '<h1>📜 نزهة المشتاق في اختراق الآفاق</h1>' +
           '<p class="desc">من أعظم كتب الجغرافيا في التاريخ الإسلامي، أُلّف بتكليف من الملك روجر الثاني في صقلية نحو سنة ٥٤٨هـ / ١١٥٤م. ' +
@@ -330,10 +397,61 @@
         const parts = items[i].querySelectorAll('.clime-part');
         parts.forEach((b, j) => { b.onclick = () => show(r.id, r.parts[j].id); });
       });
+      document.getElementById('indexBtn').onclick = renderIndexPage;
+      setupFontControls();
       setTimeout(focusFirstControl, 0);
     }
 
-    renderHome();
+    function renderIndexPage() {
+      const allEntries = [];
+      REGIONS_DB.forEach(region => {
+        region.parts.forEach(part => {
+          allEntries.push({
+            regId: region.id, regTitle: region.title,
+            partId: part.id, partName: part.name,
+            searchText: (region.title + ' ' + part.name + ' ' +
+              (part.fullText || '') + ' ' + (part.modernView || '')).toLowerCase()
+          });
+        });
+      });
+      contentEl.innerHTML =
+        '<div class="topnav">' + fontControlsHTML() +
+          '<button id="homeBtn" type="button">🏠 القائمة الرئيسية</button>' +
+        '</div>' +
+        '<div class="card">' +
+          '<h2>🔎 الفهرس الشامل والبحث الفوري</h2>' +
+          '<p>ابحث في النص الكامل للكتاب (٧ أقاليم × ١٠ أجزاء):</p>' +
+          '<input type="text" id="indexSearchInput" class="index-input" placeholder="اكتب اسم مدينة أو بلد أو مصطلح...">' +
+          '<div class="index-results" id="indexResults">' +
+            allEntries.map((e, i) =>
+              '<button type="button" class="index-item" data-i="' + i + '">' +
+                '<strong>' + e.regTitle + '</strong> — ' + e.partName +
+              '</button>').join('') +
+          '</div>' +
+        '</div>';
+      document.getElementById('homeBtn').onclick = renderHome;
+      setupFontControls();
+      document.querySelectorAll('.index-item').forEach(btn => {
+        btn.onclick = () => { const e = allEntries[btn.dataset.i]; show(e.regId, e.partId); };
+      });
+      const input = document.getElementById('indexSearchInput');
+      input.oninput = () => {
+        const q = input.value.trim().toLowerCase();
+        document.querySelectorAll('.index-item').forEach((btn, i) => {
+          btn.style.display = (!q || allEntries[i].searchText.includes(q)) ? '' : 'none';
+        });
+      };
+      setTimeout(focusFirstControl, 0);
+    }
+
+    applyFontSize();
+    let resumed = false;
+    try {
+      const lastReg = localStorage.getItem('idrisi_last_reg');
+      const lastPart = localStorage.getItem('idrisi_last_part');
+      if (lastReg && lastPart) { show(lastReg, lastPart, false); resumed = true; }
+    } catch (e) {}
+    if (!resumed) renderHome();
     }
   </script>
 </body>
