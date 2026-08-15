@@ -295,3 +295,14 @@
 - **الاختبار:** jsdom 21/21 ناجحة (تبويبات، نقاط، 4 أشرطة تقدّم، فلتر تصنيف، تبديل اتجاه، 15 قصة، إجابة خاطئة، جمل، نجمة، إعدادات فتح/غلق، ملاحة). فشل «direction toggle» الأول كان قيداً بيئياً فقط (jsdom `outside-only` لا يشغّل onclick المضمّن) — تعديل الاختبار لاستدعاء الدالة مباشرة.
 - **الإصدار:** commit `b2694ca` — "Upgrade childsgame to SavoirsEnJouant Pro (settings, theme, categories, speech, progress)".
 - **النشر:** GitHub Pages مباشرة: `https://ucfzem.github.io/childsgame/` HTTP 200 ويعرض «SavoirsEnJouant Pro» (welcome-overlay/settings/direction-toggle/vocab-cats/star-pop ×17). الملاحظة: القصص 6–15 مولّدة تلقائياً (5 أصلية + 10 مولّدة) كما ورد في النسخة المقدَّمة.
+---
+
+## 28. Retro Quran Reader + linktree sur la landing
+
+- **الطلب:** تطبيق «Retro Quran Reader» (مشغّل كاسيت رجعي ببكرتين دوّارتين أثناء التشغيل، ألوان هادئة) في مستودع مستقل باسم `quran-reader`، يلتقط القرّاء والسور مباشرة من API العامة `mp3quran.net/api/v3` (ملف واحد index.html)، ثم إضافة «Linktree» في الصفحة الرئيسية.
+- **التنفيذ:** أُنشئ المستودع `ucfzem/quran-reader` (API GitHub، HTTP 201) ودفع index.html وتم تفعيل GitHub Pages (PUT pages، HTTP 201). التحقق: CORS مفتوح `access-control-allow-origin: *` على الـAPI (301 → www.mp3quran.net يتبعه fetch تلقائياً)، 242 قارئاً، ملفات الصوت `audio/mpeg` (مثال surah 001). اللعبة على الهواء مباشرة HTTP 200.
+- **السلامة (صفر أضرار):** `quran-majeed-v3` و`/works` لم يُمسّا إطلاقاً — مستودعات منفصلة/موجودة على الهواء (200). أُضيف linktree في landing `ucfzem.github.io/index.html` بشكل **إضافي** فقط: بقي كتلة `.links` (My Works + UzChat) كما هي؛ أُضيف CSS لـ `.linktree-container`/`.link-card`/`.badge`/`.active` بألوان landing الذهبية + 3 بطاقات (📻 Retro Quran Reader `active`+NEW، 📖 Quran Majeed v3، 💼 All Works) بكل روابط `target="_blank" rel="noopener noreferrer"`.
+- **المراجعة قبل النشر:** شرح المستخدم طلب التحقق قبل الإضافة، حصل على ملخص التغييرات (local فقط)، ثم أعطى الضوء الأخضر بعد تأكيد «works doit rester tel».
+- **الإصدار:** landing commit `01063cc` — "Add linktree navigation (Retro Quran Reader, Quran Majeed v3, Works)". quran-reader commit `[main]` أولي.
+- **النشر:** landing HTTP 200 مع كل البطاقات الثلاث؛ `https://ucfzem.github.io/quran-reader/` 200؛ `https://ucfzem.github.io/quran-majeed-v3/` و`https://ucfzem.github.io/works/` دون أي تغيير.
+- **الروابط:** اللعبة https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader — landing https://ucfzem.github.io/
