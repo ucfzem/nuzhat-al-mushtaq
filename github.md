@@ -186,6 +186,19 @@
 - **الحالة النهائية:** المنصات الثلاث نشطة ومتطابقة المحتوى (الواجهة النظيفة + الفهارس + أزرار الخط + الاستئناف)، و44 اختباراً jsdom ناجحاً.
 - **ملاحظة:** كل المراجع سابقة (sections 16–18) وُثقت؛ تُحفظ محادثة هذا الجزء في هذا الملف كنسخة احتياطية.
 
+## 19. إزالة كل أثر لمكتبة الشاملة من البيانات + خط أميري للفقرات
+
+- **الطلب:** «It means there's no need of Shamela» — بما أن كل النصوص مدمجة ومحققة، أُزيلت كل إشارات الشاملة من ملف البيانات نفسه.
+- **الحذف من all-regions.js:** حقول `shamelaPartLink` (70)، `originalText` (70 — نص مؤقت مكرر أصبح بائداً)، `shamelaLink` و`shamelaUrl`، ثابت `PENDING_TEXT`، وكل ذكر لـ«الشاملة/شاملا» في التعليقات و`IDRISI_META.source` وسلاسل `source` للأقاليم.
+- **الحفاظ على النص:** أُعيد التحقق — الملف يتحلل (parses)، 7 أقاليم × 70 جزءاً، كل `fullText` مكتمل، وقاموس `IDRISI_META` سليم. الحجم: 158,632 → 132,643 بايت.
+- **خط أميري للفقرات فقط:** أُضيف `family=Amiri:wght@400;700` إلى رابط Google Fonts؛ قواعد `.card p` و`.modern p` صارت `font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif;` مع `font-size: calc(var(--content-font-size) * 1.15)` و`line-height: 1.9`. العناوين (h1/h2/h3) وواجهة المستخدم والأزرار تبقى بخط Cairo دون تغيير.
+- **التحقق:** 44 اختباراً jsdom ناجحاً؛ grep صفر إشارات شاملة في `index.html` و`all-regions.js` و`README.md`.
+- **الإصدارات:** `5fe00ae` — "Remove all Shamela references from data file…" ثم `ea0e7ea` — "Apply Amiri font to body paragraphs only; keep Cairo for titles and UI".
+- **النشر (المنصات الثلاث HTTP 200، Amiri حاضرة، صفر مراجع شاملة، البيانات 132,643 بايت):**
+  - GitHub Pages: `https://ucfzem.github.io/nuzhat-al-mushtaq/`
+  - Vercel: `https://nuzhat-al-mushtaq.vercel.app/`
+  - Cloudflare Workers: `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev/` (Version ID `42eef390-90d9-443d-acd0-b6bbd049f3dc`)
+
 ## 19. إزالة كل أثر للمكتبة الشاملة من البيانات (استقلال تام عن الشاملة)
 
 - **الطلب:** «It means there's no need of Shamela» — إزالة كل مرجع للشاملة من الموقع والبيانات نهائياً.
