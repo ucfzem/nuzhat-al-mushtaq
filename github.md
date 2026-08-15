@@ -306,3 +306,13 @@
 - **الإصدار:** landing commit `01063cc` — "Add linktree navigation (Retro Quran Reader, Quran Majeed v3, Works)". quran-reader commit `[main]` أولي.
 - **النشر:** landing HTTP 200 مع كل البطاقات الثلاث؛ `https://ucfzem.github.io/quran-reader/` 200؛ `https://ucfzem.github.io/quran-majeed-v3/` و`https://ucfzem.github.io/works/` دون أي تغيير.
 - **الروابط:** اللعبة https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader — landing https://ucfzem.github.io/
+---
+
+## 29. ترقية quran-reader: 10 ثيمات + ثنائية اللغة + تحكم تلفاز ذكي
+
+- **الطلب:** نسخة «Corrections» — 10 ثيمات ألوان (Vintage Pink، Mint، Amber، Cream، Cyber، Ocean، Gold، Lavender، Sunset، Emerald)، تبديل فرنسي/عربي (i18n مع `dir=rtl`)، التنقل بأزرار الريموت (`MediaPlayPause`/`MediaTrackNext/Previous`/الأسهم)، تركيز `.tv-focusable`، إصلاح تباين النصوص في الثيمات الداكنة، وتبديل ثيم بالنقر.
+- **التصحيحات المضافة:** (1) في النسخة المقدمة، الدوائر الثيمية `div` تعتمد `onclick` وزر Enter بالريموت لا يضغط على الـdiv — أُضيفت حالة `Enter` في معالج keydown: إن كان النشط `div.theme-dot` يُنفّذ `click()` (يتيح اختيار الثيم على التلفاز). (2) رسالة «Erreur réseau» كانت ثابتة فرنسية — أصبحت عبر `i18n[currentLang].netError` («خطأ في الاتصال» بالعربية).
+- **التحقق:** API يعمل بـ`language=ar` (241 قارئاً) و`eng` (242). اختبارات jsdom 10/10 (10 نقاط ثيم، الثيم الافتراضي، setTheme، Enter على النقطة يطلق click، تبديل اللغة→عنوان عربي و`dir=rtl`، العودة للفرنسية، خيارات القارئ، عناصر tv-focusable). فشل واحد كان قيد بيئي jsdom (inline onclick لا يعمل في outside-only) — تم التحقق من الوصلة Enter→click مباشرة.
+- **الإصدار:** commit `bf01b70` — "Upgrade: 10 themes, FR/AR i18n, Smart TV nav, Enter on theme dots".
+- **النشر:** GitHub Pages مباشرة: `https://ucfzem.github.io/quran-reader/` HTTP 200 ويعرض الثيمات والعناصر الجديدة. landing/works/quran-majeed-v3 دون تغيير.
+- **الرابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
