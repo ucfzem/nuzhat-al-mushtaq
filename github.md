@@ -345,3 +345,12 @@
 - **الإصدار:** commit `b7e5747` — "Fix 4 UX bugs: auto-advance on ended, preserve selection on lang switch, D-pad on native selects, prev/next wraparound".
 - **النشر:** GitHub Pages 200 وتحقق وجود `populateSurahOptions`/`savedServer`/حارس `<select>`/الالتفاف. landing/works/quran-majeed-v3 دون تغيير.
 - **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+## 33. quran-reader: إعادة تصميم «Retro Walkman» المعدنية (SNOWSKY) + إعادة تطبيق الإصلاحات الأربعة
+
+- **الطلب:** لصق المستخدم نسخة جديدة كلياً — هيكل Walkman معدني عمودي (زوايا دائرية، ألواح داخلية، أزرار جانبية معدنية عبر `::before/::after`)، نافذة كاسيت مفصلة (حافة داكنة، نافذة شريط واضحة، بكرتان بأسنان، ملصق كاسيت «Side A»)، شريط إيكولايزر متحرك فوق شريط التقدم (5 أعمدة `#equalizer` تتحرك عند التشغيل عبر `equalizer.active`)، وأزرار معدنية دائرية ثلاثية الأبعاد PREV/PLAY/NEXT بتدرجات معدنية و`knob-shadow` وتسميات أسفلها. ثيمان: معدني داكن (افتراضي) وفضي فاتح (`light-mode`)، أكسنت ذهبي `#d4af37`، العنوان «SNOWSKY». الأيقونة ☀️ افتراضياً → 🌙 في الوضع الفاتح.
+- **الإصلاحات المعاد تطبيقها (كانت مفقودة في اللصق):** (1) `ended` auto-advance مع التفاف (النسخة اللاصقة كانت تتوقف عند آخر سورة). (2) تبديل اللغة يحفظ `currentServer` (مطابقة عبر URL) + `surahSelect.value` ويعيد البناء بعد `loadReciters()` دون إيقاف الصوت (النسخة اللاصقة كانت تصفّر القوائم). (3) إعادة إضافة معالج `keydown` للتنقل التلفزيوني (كان غائباً كلياً) مع حارس `<select>`/range حتى تعمل أسهم الخيارات أصلاً. (4) `prevBtn`/`nextBtn` بمنطق الالتفاف (الأولى↔الأخيرة) بدل شرط `> 1` المعطوب. و`SURAH_NAMES_AR` صارت `var` (اختبار jsdom).
+- **التحقق:** jsdom **38/38** (إضافات: وجود `#equalizer` مع 5 أعمدة، دلالات أيقونة ☀️/🌙). النشر 200 وتحقق: `walkman-container`، `equalizer`، `SNOWSKY`، `savedServer`، حارس `<select>`، الالتفاف — كلها في HTML المخدوم.
+- **الإصدار:** commit `794232d` — "Retro Walkman metallic shell (SNOWSKY) with equalizer; re-applied 4 UX fixes".
+- **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
