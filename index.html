@@ -72,14 +72,6 @@
       background: #f1f6f2;
     }
     .modern h2 { color: var(--green); font-size: 1.05rem; }
-    .modern small { font-weight: normal; color: #6b7a6f; font-size: .8rem; }
-    .note {
-      background: #fbf0dc;
-      border: 1px dashed var(--gold);
-      border-radius: 6px; padding: 8px 12px; font-size: calc(var(--content-font-size, 1rem) * 0.83);
-      margin-top: 10px;
-    }
-    .note a { color: #6d4a10; }
     .pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
     .pager button {
       font-family: inherit; font-weight: bold;
@@ -165,8 +157,6 @@
 
   <footer>
     <p>📜 <b>نزهة المشتاق في اختراق الآفاق</b> — أبو عبد الله محمد بن محمد الإدريسي (٤٩٣–٥٦٠هـ / ١١٠٠–١١٦٥م)، أُنجز بتكليف من الملك روجر الثاني الصقلي نحو ٥٤٨هـ / ١١٥٤م.</p>
-    <p>المصدر: الطبعة المحققة (عالم الكتب، بيروت ١٤٠٩هـ/١٩٨٩م) ومكتبة الشاملة الإلكترونية ·
-      <a href="https://shamela.ws/book/11787">النص الكامل على المكتبة الشاملة ↗</a></p>
     <p>الأجزاء التي لم يُكتمل نصها الحرفي موسومة «قيد الإضافة»؛ لا يُختلق فيها أي نص غير مؤكد.</p>
   </footer>
 
@@ -306,18 +296,13 @@
       const idx = reg.parts.findIndex(p => p.id == partId);
       const prev = idx > 0 ? reg.parts[idx - 1] : null;
       const next = idx < reg.parts.length - 1 ? reg.parts[idx + 1] : null;
-      const source = '<a href="' + part.shamelaPartLink + '" target="_blank" rel="noopener">الجزء ' +
-        part.id + ' من ' + reg.title + ' ↗</a>';
 
       const paras = (part.fullText || '')
         .split('\n').map(l => l.trim()).filter(Boolean)
         .map(p => '<p>' + p + '</p>').join('');
       const originalBlock = paras
-        ? '<p><strong>النص الأصلي (من المصدر):</strong></p>' + paras +
-          '<div class="note">🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>'
-        : '<p><strong>ملخص مؤقت:</strong><br>' + part.summary + '</p>' +
-          '<div class="note">⚠️ النص الحرفي الكامل لهذا الجزء قيد الإضافة من الطبعة المحققة والمصادر الموثوقة. ' +
-          '🔗 النص الأصلي على المكتبة الشاملة: ' + source + '</div>';
+        ? '<p><strong>النص الأصلي:</strong></p>' + paras
+        : '<p><strong>ملخص مؤقت:</strong><br>' + part.summary + '</p>';
 
       contentEl.innerHTML =
         '<div class="topnav">' + fontControlsHTML() +
@@ -378,7 +363,6 @@
           '<p class="desc">من أعظم كتب الجغرافيا في التاريخ الإسلامي، أُلّف بتكليف من الملك روجر الثاني في صقلية نحو سنة ٥٤٨هـ / ١١٥٤م. ' +
           'بنى الإدريسي تقسيمه للعالم على <b>سبعة أقاليم</b>، وقسّم كل إقليم إلى <b>عشرة أجزاء</b> من الغرب إلى الشرق، ' +
           'واصفاً البلاد والمدن والأنهار والمسالك. هذا الموقع يعرض الأقاليم والأجزاء بالترتيب الأصلي مع التزام تام بالأمانة العلمية.</p>' +
-          '<p style="font-size:.85rem;color:#7a6a50">' + META.source + '</p>' +
           '<h2>اختر إقليماً للبدء</h2>' +
           '<div class="clime-list">' +
             REGIONS_DB.map((r, i) =>
