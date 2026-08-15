@@ -455,3 +455,18 @@
 -   **Vérification:** logique de validation relue (array push inchangé), déploiement Pages HTTP 200, marqueur `direction: rtl` = 2 dans le HTML servi.
 -   **Commit:** `e38d9ee` dans `ucfzem/ucfzem.github.io` (via API Contents, branche `main`).
 -   **Lien:** https://ucfzem.github.io/childsgame/
+
+## 42\. TV Hardening final — quran-reader (focus rings, roues, défilement)
+
+-   **Contexte:** le défilement par télécommande des listes sourates/récitateurs ne descendait toujours pas assez loin sur TV malgré le correctif §40 ; diagnostic partagé (utilisateur + assistant) : renforcer focus/overflow plutôt que réorganiser la mise en page.
+-   **Patch appliqué (commit `8f6110a`), jsdom **42/42**:**
+    1.  **Anneaux de focus TV durcis:** `*:focus-visible, .tv-focusable:focus, .dropdown-item:focus { outline: 3px solid #ffe66d !important; outline-offset: 2px !important; border-radius: 8px; }` (remplace l'ancienne règle 2px `var(--focus-ring)`).
+    2.  **Roues anti-effondrement:** `.spool-wrapper` et `.reel` reçoivent `flex-shrink: 0 !important` (+ largeurs/hauteurs `!important`) pour empêcher les moteurs WebKit/Tizen de réduire les bobines à 0×0 ; `transform-box: fill-box !important` sur `.reel` et `.reel svg, .reel-spoke` pour un pivot correct de la rotation.
+    3.  **Défilement listes:** `.dropdown-list` + `-webkit-overflow-scrolling: touch` (momentum) et `outline: none` ; `surahOptionsList.tabIndex = 0` et `reciterOptionsList.tabIndex = 0` ajoutés en fin de `buildCustomSurahList()`/`buildCustomReciterList()` pour que la télécommande focalise le conteneur défilable directement.
+-   **Vérification:** marqueurs servis sur les 3 plateformes (`flex-shrink: 0 !important` ×2, `outline: 3px solid #ffe66d` ×1, `tabIndex = 0` ×2).
+-   **Déploiement (commit `8f6110a`):**
+    -   GitHub Pages: https://ucfzem.github.io/quran-reader/
+    -   Vercel (auto via push): https://quran-reader-swart.vercel.app
+    -   Cloudflare Workers (reconstruit): https://quran-reader.azer-tyu199p.workers.dev — Version ID `54f76655-c3a2-4401-a327-508445628798`
+-   **Statut:** en attente de validation réelle de l'utilisateur sur le téléviseur (défilement complet jusqu'à An-Nas).
+
