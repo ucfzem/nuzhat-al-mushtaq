@@ -316,3 +316,13 @@
 - **الإصدار:** commit `bf01b70` — "Upgrade: 10 themes, FR/AR i18n, Smart TV nav, Enter on theme dots".
 - **النشر:** GitHub Pages مباشرة: `https://ucfzem.github.io/quran-reader/` HTTP 200 ويعرض الثيمات والعناصر الجديدة. landing/works/quran-majeed-v3 دون تغيير.
 - **الرابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+## 30. quran-reader: الثيمات الثنائية (بنّي داكن+ذهبي افتراضي / فاتح بيج) + إصدارات moshaf + أسماء السور
+
+- **الطلب:** «في النهاية أزل كل الثيمات والألوان واجعل البني الداكن والذهبي الافتراضي. والوضع الفاتح بيج/بني/ذهبي/أصفر» + نسخة moshaf: ربط كل قارئ+رواية بفئة فريدة (لا تكرار في الأسماء يشير لنفس الصوت)، وأسماء السور العربية من مصفوفة داخلية `SURAH_NAMES_AR[114]` (لا جلب API).
+- **التنفيذ:** أُزيلت لوحة الـ10 ثيمات بالكامل (0 نقطة ثيم). أصبح وضعان فقط: **داكن** (bg `#1a120b`، بطاقات `#2b1f14`/`#3a2a1a`، ذهبي `#d4af37`، نص `#f0e2c0`) كافتراضي، و**فاتح** (`body.light-mode`: بيج `#f3ead5`/`#e9dcbe`/`#decfa8`، بني ذهبي أصفر `#b8860b`) عبر زر `#themeToggle` (🌙/☀️). `SURAH_NAMES_AR` مصفوفة 114 اسماً عربياً؛ تُبنى خيارات السورة `Sourate <id> - <arabicName>` (فرنسية) / `<id>. سورة <arabicName>` (عربية). `loadReciters()` يبسّط `reciter.moshaf[]` إلى `parsedRecitersList` (الاسم `الراوي (اسم الموشف)` عند تعدد المواشف — مثال ماهر المعيقلي: حفص عن عاصم - مرتل / المصحف المجود / المصحف المعلم) ثم ترتيب أبجدي. حُرّكت إضافة الـplaceholder قبل fetch (تُعرض فوراً حتى لو بطأ API)؛ أُزيلت حالة `Enter` لأن أزرار/قوائم التعامل الأصلي كافٍ.
+- **التحقق:** صياغة سليمة + jsdom 17/17 (لا نقاط ثيم، داكن افتراضي، التبديل الفاتح/الداكن والأيقونة، 114 اسماً (الفاتحة/الناس)، تبديل اللغة→عنوان عربي و`dir=rtl`، خيارات القارئ، بناء خيارات السورة، التسمية العربية `1. سورة الفاتحة`، عناصر tv-focusable). ملاحظة بيئة: jsdom لا يثبّت `let/const` عبر evals متعددة لذا صارت `SURAH_NAMES_AR` و`parsedRecitersList` `var` (مفيدة أيضاً للتصحيح على التلفاز).
+- **الإصدار:** commit `8e739fa` — "Dark brown/gold default + light mode; moshaf editions flattened; inline Arabic surah names".
+- **النشر:** GitHub Pages 200 (تحقق: 0 theme-dot، وجود `themeToggle` و`light-mode` و`SURAH_NAMES_AR` في HTML المخدوم). landing/works/quran-majeed-v3 دون تغيير.
+- **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
