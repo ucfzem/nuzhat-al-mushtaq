@@ -276,3 +276,13 @@
 - **الاختبار:** 8 اختبارات جديدة ناجحة (الزر موجود في صفحة الجزء فقط، يُستدعى clipboard بنص 4,889 حرفاً مطابقاً لـ 1-1، نص خام بلا وسوم، حالة «copied»، لا زر في الصفحة الرئيسية) + أطقم jsdom الثلاثة كلها ناجحة (19 + 3 + 24).
 - **الإصدار:** commit — "Add copy button to every part page (copies full original text)".
 - **النشر:** GitHub Pages وVercel فوراً (copyBtn×3 في كل منهما، HTTP 200). Cloudflare: أول محاولتي deploy لصقا عند «Total Upload» ولم تصلا؛ الثالثة انتشرت فعلياً — التحقق المباشر `copyBtn`×3 وHTTP 200. البيانات مطابقة على المنصات الثلاث (md5 `3759c415…`).
+---
+
+## 26. لعبة «SavoirsEnJouant» على childsgame + بطاقة في الأعمال
+
+- **الطلب:** إضافة لعبة تعليمية ثنائية اللغة (فرنسي/عربي) للأطفال على `ucfzem.github.io/childsgame`، وبطاقة مشروع جديدة لها في صفحة المحفظة الرئيسية ضمن حاوية المشاريع العامة المفتوحة فقط (لا تمس المشاريع المحمية 🔐).
+- **اللعبة:** `childsgame/index.html` — «SavoirsEnJouant»؛ 4 تبويبات (مفردات/أرقام/جمل/قصص)، 15 قصة ثنائية اللغة، وضع ليلي/نهاري (localStorage `theme`)، ملاحة بلوحة المفاتيح/الريموت، أصوات (AudioContext يُنشأ كسولاً عند أول تفاعل)، اهتزاز، حفظ النقاط `savoirsEnJouant_score`. أُصلح: قصص حقيقية 15 بدل المولّدة، فلترة العناصر المرئية فقط في الملاحة، أنماط focus-visible، try/catch لـ localStorage.
+- **الاختبار:** jsdom 15/15 ناجحة بعد ضبط مأزقين بيئيين فقط: jsdom يعرّف `offsetParent` على `HTMLElement.prototype` فيحجب محاكاة `Element.prototype` (الحل: المحاكاة على HTMLElement)، ومقارنة النقاط استخدمت `==` لأن jsdom يُرجع القيمة الرقمية دون تحويل (10 === "10").
+- **البطاقة:** في `works/index.html` حاوية `#publicProjects` بُدئت من المشاريع العامة فقط: `{ num: 13, emoji:"🎮", name:"SavoirsEnJouant", tag:"Kids Learning", url:"https://ucfzem.github.io/childsgame/", newTab:true }` — يولّد `target="_blank" rel="noopener noreferrer"`، + إدخال JSON-LD position 16 + «13 projets publics». تحقق jsdom: 13 بطاقات، الرابط والسمتان صحيحتان.
+- **النشر:** commit `d5bd5c7` — "Add SavoirsEnJouant kids game to public projects (new tab)". GitHub Pages انتشرت بعد ~30 ثانية: `https://ucfzem.github.io/childsgame/` HTTP 200، و`https://ucfzem.github.io/works/` يعرض البطاقة و«13 projets publics».
+- **الروابط:** اللعبة https://ucfzem.github.io/childsgame/ — الأعمال https://ucfzem.github.io/works/ — مصدر اللعبة https://github.com/ucfzem/ucfzem.github.io/blob/main/childsgame/index.html
