@@ -373,3 +373,16 @@
 - **الإصدار:** commit `42cbb36` — "Deploy Hi-Fi Walkman: user bon-fix (sync header, media session, localStorage) + display sync single source of truth".
 - **التحقق من النشر:** HTTP 200، علامات في HTML المخدوم: `HI-FI WALKMAN`، `eqContainer`، `updateMediaSession`، `walkman_quran_state`، `syncSurahDisplay`.
 - **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+### §35 — Page « My Works » : ajout de Quran Reader en #2 (2026-08-15)
+
+- **Modification:** insert de « Quran Reader » (catégorie **Audio**, émoji 🎧, sans icône image, URL https://ucfzem.github.io/quran-reader/) en position **2** dans la liste des projets publics de https://ucfzem.github.io/works/.
+- **Décalage:** Tanger d'Antan passe de #2 → #3, et tous les projets suivants sont incrémentés de 1 (Blog 3→4, Lingotech 4→5, MicroInvoice 5→6, Droppy 6→7, Rafeeq 7→8, WebHealth 8→9, ElixirTech 9→10, EmailCollector 10→11, API JobFinder 11→12, Nuzhat al-Mushtaq 12→13, SavoirsEnJouant 13→14).
+- **Compteur:** badge en-tête « 13 projets publics » → « **14 projets publics** ».
+- **Cohérence:** JSON-LD (ItemList) mis à jour avec le nouvel item en position 2 et décalage des positions 2→17 ; meta description enrichie avec « Quran Reader ».
+- **Styles conservés:** cartes glassmorphism (`.card`, fond `rgba(201,168,76,0.07)`, bordure dorée), thème sombre `[data-theme="dark"]` + bascule clair, disposition et responsive intacts.
+- **Vérification jsdom:** rendu = 14 cartes dans l'ordre attendu (1 Quran Majeed v3 → 2 Quran Reader 🎧 Audio → 3 Tanger d'Antan → ... → 14 SavoirsEnJouant), sous-titre 14.
+- **Déploiement:** HTTP 200, marqueurs dans le HTML servi : « 14 projets publics », « Quran Reader » (x3), « quran-reader/ » (x2), « 🎧 ».
+- **Commit:** `2236267` sur ucfzem/ucfzem.github.io (main).
+- **Liens:** https://ucfzem.github.io/works/ — source https://github.com/ucfzem/ucfzem.github.io/blob/main/works/index.html
