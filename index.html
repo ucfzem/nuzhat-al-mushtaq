@@ -7,7 +7,7 @@
   <meta name="description" content="عرض أمين لكتاب نزهة المشتاق في اختراق الآفاق للإدريسي: 7 أقاليم، كل إقليم في 10 أجزاء، بالترتيب الأصلي.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink: #2b2118;
@@ -42,8 +42,16 @@
     }
     .topnav button:hover { background: var(--gold); color: #fff; }
     .topnav .font-row { display: flex; gap: 4px; margin-inline-end: auto; }
-    .card p { font-size: var(--content-font-size); }
-    .modern p { font-size: var(--content-font-size); }
+    .card p {
+      font-size: calc(var(--content-font-size, 1rem) * 1.15);
+      line-height: 1.9;
+      font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif;
+    }
+    .modern p {
+      font-size: calc(var(--content-font-size, 1rem) * 1.15);
+      line-height: 1.9;
+      font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif;
+    }
     .index-input {
       width: 100%; padding: 14px; font-size: 1.1rem;
       border: 1px solid var(--line); border-radius: 8px;
