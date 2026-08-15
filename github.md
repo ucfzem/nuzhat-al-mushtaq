@@ -400,3 +400,26 @@
 - **Déploiement:** HTTP 200, marqueurs servis : `color-scheme: dark` (1), `color-scheme: light` (1), `e.target.blur()` (x3), `playbackState` (x2), `is-playing` (x2), `track-subtitle` (x2), `settingsShortcut` (1), `wakeLock` (x7).
 - **Commits:** `a18e9c0` (Wake Lock + lien settings Chrome) puis `5a313b7` (polissage mobile).
 - **Liens:** https://ucfzem.github.io/quran-reader/ — source https://github.com/ucfzem/quran-reader
+---
+
+### §37 — Walkman v4 : dropdowns personnalisés (Sourate/Récitateur) + bouton copie (2026-08-15)
+
+- **Base:** nouveau fichier complet fourni par l'utilisateur (« toutes corrections intégrées »), déployé tel quel.
+- **Structure:** les `<select>` natifs (`reciterSelect`, `surahSelect`) restent la source de vérité mais sont masqués (`style="display:none"`) ; remplacés par des dropdowns personnalisés : déclencheurs `#reciterTrigger`/`#surahTrigger` (+ `#reciterTriggerText`/`#surahTriggerText`), modales `#reciterModal`/`#surahModal` (`.dropdown-modal.hidden`), boutons fermer `#closeReciterModal`/`#closeSurahModal`, listes `#reciterOptionsList`/`#surahOptionsList` d'éléments `<li class="dropdown-item">`.
+- **JS:** `buildCustomSurahList()`/`buildCustomReciterList()` reconstruisent les `<li>` depuis `select.options` ; clic sur un `<li>` → `selectedIndex` + texte du déclencheur + fermeture + `dispatchEvent(new Event('change'))` (toute la logique existante — sync, Media Session, localStorage, navigation — continue de fonctionner). `updateSurahTriggerText()`/`updateReciterTriggerText()` synchronisent les textes, y compris placeholders `-- Sélectionner Sourate --` / `-- Sélectionner Récitateur --`.
+- **Bouton copie** `#copySurahBtn` : copie `displaySurah.textContent` (garde si placeholder `--`) ; **correctif assistant :** `navigator.clipboard && navigator.clipboard.writeText` sinon repli `textarea` + `document.execCommand('copy')` (contexte non-sécurisé).
+- **Correctif assistant (bug du collage):** le placeholder français collé contenait du texte arabe (« -- Sélectionner القارئ -- ») → corrigé en « -- Sélectionner Récitateur -- ».
+- **Vérification:** jsdom **83/83** (nouvelles assertions : listes `<li>` reciter/surah, déclencheurs, sync des textes après nav, copie, Media Keys `MediaTrackNext`/`MediaTrackPrevious`).
+- **Piège test harnais:** `reciterSelect.value = '1'` ↔ DOM index 2 (placeholder décale les valeurs) → valeur `'1'` = « Mishary Alafasy (Hafs - Murattal) ».
+
+### §38 — Walkman v4 : correctifs TV/WebView (modale sombre, z-index, cassette SVG, D-Pad) (2026-08-15)
+
+- **CSS — modale au-dessus du pointeur TV:** `.dropdown-modal { z-index: 99999 !important; }`.
+- **CSS — panneau sombre marron (Mode Sombre):** `.dropdown-content { background: #1c1a18; border: 1px solid #3d342b; }`, `.dropdown-header { background: #26221e; border-bottom-color: #3d342b; }`, `.dropdown-item { color: #e0d8cf; border-bottom: 1px solid #2a2520; }` ; focus/hover/sélection or `#d4af37` + texte `#111111` + `outline: none` (`.dropdown-item:hover, :focus, .selected`).
+- **Cassette — calligraphie vectorielle:** le `<text>` arabe dans le SVG (inversé/découpé selon le shaping RTL de la WebView) est remplacé par un tracé vectoriel pur `<path>` (dégradé or conservé, `.quran-svg-title`) — rendu identique sur tout écran sans dépendance aux polices système.
+- **JS — navigation D-Pad dans les modales:** `openSurahModal()`/`openReciterModal()` posent `tabindex="0"` sur chaque `.dropdown-item` et focalisent l'élément `.selected` (sinon le 1er) + `scrollIntoView({block:'center'})` ; handlers `keydown` sur `surahOptionsList`/`reciterOptionsList` : `ArrowDown`/`ArrowUp` (focus circulaire), `Enter` (valide → `.click()`), `Escape`/`Back` (ferme + retour du focus au déclencheur), avec `e.stopPropagation()` ; garde dans le handler TV global : `if (document.activeElement.classList.contains('dropdown-item')) return;`.
+- **Correctif de branche de déploiement:** le push initial a créé une branche `master` alors que Pages build `main` → repoussé sur `main` + suppression de `master`.
+- **Vérification:** jsdom **83/83** (nouvelles assertions : focus sur `.dropdown-item` à l'ouverture, flèches haut/bas dans la liste, Enter valide+ferme, Escape ferme+refocus déclencheur).
+- **Déploiement:** HTTP 200, marqueurs servis : `dropdown-trigger` (5), `surahTrigger`/`reciterTrigger` (9), `z-index: 99999` (1), `quran-svg-title` (1), `openSurahModal`/`openReciterModal` (2), `1c1a18` (1), `d4af37` (4), `copySurahBtn` (2).
+- **Commits:** `1318615` (Deploy v4) + `1089711` (retrait artefact de sauvegarde local).
+- **Liens:** https://ucfzem.github.io/quran-reader/ — source https://github.com/ucfzem/quran-reader
