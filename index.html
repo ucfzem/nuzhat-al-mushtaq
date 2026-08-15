@@ -68,6 +68,7 @@
       border-radius: 6px; padding: 5px 14px; cursor: pointer; color: var(--ink);
     }
     .topnav button:hover { background: var(--gold); color: #fff; }
+    .topnav button.copied { background: var(--green); color: #fff; }
     .topnav .font-row { display: flex; gap: 4px; margin-inline-end: auto; }
     .card p {
       font-size: calc(var(--content-font-size, 1rem) * 1.15);
@@ -345,6 +346,42 @@
       }
     });
 
+    function copyPartText(part) {
+      const text = (part.fullText || part.summary || '').trim();
+      const btn = () => document.getElementById('copyBtn');
+      const done = () => {
+        const b = btn();
+        if (!b) return;
+        b.textContent = '✓ تم النسخ';
+        b.classList.add('copied');
+        setTimeout(() => {
+          if (b.isConnected) {
+            b.textContent = '📋 نسخ النص';
+            b.classList.remove('copied');
+          }
+        }, 1600);
+      };
+      const fail = () => {
+        const b = btn();
+        if (b) b.textContent = '⚠️ تعذر النسخ';
+      };
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) { fail(); }
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else {
+        fallback();
+      }
+    }
+
     function show(regId, partId, saveHistory) {
       if (saveHistory !== false) {
         try {
@@ -369,6 +406,7 @@
 
       contentEl.innerHTML =
         '<div class="topnav">' + fontControlsHTML() +
+          '<button id="copyBtn" type="button">📋 نسخ النص</button>' +
           '<button id="indexBtn" type="button">🔎 الفهرس</button>' +
           '<button id="homeBtn" type="button">🏠 القائمة الرئيسية</button>' +
         '</div>' +
@@ -389,6 +427,7 @@
 
       if (prev) document.getElementById('prevBtn').onclick = () => show(reg.id, prev.id);
       if (next) document.getElementById('nextBtn').onclick = () => show(reg.id, next.id);
+      document.getElementById('copyBtn').onclick = () => copyPartText(part);
       document.getElementById('indexBtn').onclick = renderIndexPage;
       document.getElementById('homeBtn').onclick = renderHome;
       setupFontControls();
