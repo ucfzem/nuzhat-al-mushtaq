@@ -423,3 +423,35 @@
 - **Déploiement:** HTTP 200, marqueurs servis : `dropdown-trigger` (5), `surahTrigger`/`reciterTrigger` (9), `z-index: 99999` (1), `quran-svg-title` (1), `openSurahModal`/`openReciterModal` (2), `1c1a18` (1), `d4af37` (4), `copySurahBtn` (2).
 - **Commits:** `1318615` (Deploy v4) + `1089711` (retrait artefact de sauvegarde local).
 - **Liens:** https://ucfzem.github.io/quran-reader/ — source https://github.com/ucfzem/quran-reader
+
+## 39\. Déploiement du build final fusionné — Hi-Fi Retro Quran Walkman (les 4 raffinements)
+
+-   **Contexte:** reprise après perte de session ; le fichier `index.html` fourni par l'utilisateur comme build « production-ready » final a été comparé au v4 déployé (https://ucfzem.github.io/quran-reader/) — il manquait encore les 4 raffinements convenus.
+-   **Les 4 raffinements intégrés:**
+    1.  **Rotation des bobines:** anti-horaire (`rotate(-360deg)` via `@keyframes spin-reverse`, 2s) + promotion GPU (`will-change: transform`, `transform-origin: center`).
+    2.  **Moteur visualiseur EQ:** `fftSize = 128` (64 bins) avec clustering par barre (`binsPerBar`), plus animation CSS de repli (`fake-eq`) et respiration au repos (`bar-pulse`), drapeau `isWebAudioSupported` (try/catch CORS).
+    3.  **Navigation TV D-Pad:** `focusAndCenter()` (focus + `scrollIntoView` centré) + throttling 60ms (`isScrollThrottled`) pour les répétitions de touche sur Android TV.
+    4.  **Défilement & focus:** `overscroll-behavior: contain` (x2), anneaux de focus `!important` haute-contraste.
+-   **Correctif unique réappliqué:** `try/catch` autour de `scrollIntoView` dans `focusAndCenter` (compatibilité WebView anciennes).
+-   **Vérification jsdom:** **34/34** (marqueurs statiques + flux complet : choix récitateur → sourates → navigation flèches + throttle → Enter/Escape → classe `fallback` sans AudioContext → copie).
+-   **Déploiement 3 plateformes (commit `f74ff31`):**
+    -   GitHub Pages: https://ucfzem.github.io/quran-reader/ (HTTP 200, marqueurs vérifiés)
+    -   Vercel: projet `quran-reader` (compte `ucfzem-s-projects`) → https://quran-reader-swart.vercel.app (HTTP 200) — repo GitHub connecté (push = auto-deploy)
+    -   Cloudflare Workers: Worker `quran-reader` → https://quran-reader.azer-tyu199p.workers.dev (HTTP 200, Version ID `eae03dbb-bee3-41fa-bffb-40a682068add`)
+-   **Note sécurité:** tokens GitHub/Vercel/Cloudflare fournis ponctuellement par l'utilisateur, jamais stockés sur disque ni commités.
+
+## 40\. Correctif défilement TV — listes sourates/récitateurs (quran-reader)
+
+-   **Bug signalé:** « Still can't scroll too far in coran index and reciters. Remote tuch the buttom and stops » — les listes déroulantes se figeaient près du haut.
+-   **Cause:** `scrollIntoView({ behavior: 'smooth', block: 'center' })` appelé en rafale sous répétition de touche de la télécommande → les animations smooth s'interrompent mutuellement et le défilement n'avance plus.
+-   **Correctif (commit `7c4263c`):** `focusAndCenter` pilote désormais `list.scrollTop` directement (calcul via `getBoundingClientRect`, `scrollBehavior: 'auto'` temporaire) — défilement déterministe sur tous les WebView ; et les flèches se **serrent en fin de liste** (`Math.min`/`Math.max`) au lieu de boucler vers le haut.
+-   **Vérification jsdom:** **37/37** (clamp haut/bas, marqueur `scrollTop` présent).
+-   **Déploiement:** GitHub Pages + Vercel (auto via push) + Cloudflare Worker reconstruit → les 3 plateformes servent le correctif (marqueur `list.scrollTop = Math.max` = 1 chacune, HTTP 200).
+
+## 41\. Correctif ordre des mots arabes — childsgame (SavoirsEnJouant)
+
+-   **Bug:** en mode phrase, les chips cliqués (ex. « الطفل », « يلعب », « في ») s'affichaient dans l'ordre visuel inversé car le conteneur était en LTR alors que l'arabe se lit de droite à gauche.
+-   **Correctif:** `direction: rtl;` ajouté à `.target-zone` dans `childsgame/index.html` (repo `ucfzem/ucfzem.github.io`). Purement visuel : `checkSentence()` compare `JSON.stringify(userBuiltWords)` à `JSON.stringify(data.arWords)` — l'ordre du tableau est inchangé.
+-   **Vérification:** logique de validation relue (array push inchangé), déploiement Pages HTTP 200, marqueur `direction: rtl` = 2 dans le HTML servi.
+-   **Commit:** `e38d9ee` dans `ucfzem/ucfzem.github.io` (via API Contents, branche `main`).
+-   **Lien:** https://ucfzem.github.io/childsgame/
