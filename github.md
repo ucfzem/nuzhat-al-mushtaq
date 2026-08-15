@@ -326,3 +326,12 @@
 - **الإصدار:** commit `8e739fa` — "Dark brown/gold default + light mode; moshaf editions flattened; inline Arabic surah names".
 - **النشر:** GitHub Pages 200 (تحقق: 0 theme-dot، وجود `themeToggle` و`light-mode` و`SURAH_NAMES_AR` في HTML المخدوم). landing/works/quran-majeed-v3 دون تغيير.
 - **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+## 31. quran-reader: إصدار جديد من المستخدم + وضع داكن/فاتح + معالجة أخطاء الصوت
+
+- **السياق:** أعاد المستخدم لصق نسخة أقدم (10 ثيمات، theme-pink) تتضمن إصلاحات مoshaf + مصفوفة `SURAH_NAMES_AR` + معالجة أخطاء الصوت الجديدة (`audioPlayer.play().catch(...)` و`addEventListener('error')` تعرض «غير متوفر حالياً»/«Fichier non disponible»). سُئل المستخدم عن المسار وأجاب: «Réappliquer brun-or + mode clair» ثم «Will go back to dark light mode after those fixes».
+- **التنفيذ:** اعتمد كود المستخدم اللاصق كأساس وحُفظ، ثم أُعيد تطبيق: إزالة الـ10 ثيمات (0 نقطة)، وضع **داكن بني+ذهبي** (`#1a120b`/`#2b1f14`/`#3a2a1a`/`#d4af37`) افتراضياً، زر `#themeToggle` (🌙/☀️) للوضع **الفاتح بيج/بني/ذهبي/أصفر** (`body.light-mode`). أُبقيت معالجات خطأ الصوت الجديدة من لصق المستخدم. بالإضافة: placeholder القارئ قبل fetch، رسالة شبكة مترجمة (`خطأ في الاتصال`/`Erreur réseau`)، `parsedRecitersList`/`SURAH_NAMES_AR` كـ`var` (اختبار jsdom).
+- **التحقق:** jsdom 17/17 (لا نقاط ثيم، داكن افتراضي، تبديل فاتح/داكن + الأيقونة، 114 اسماً، تبديل اللغة→`dir=rtl`، خيارات القارئ، تسميات السور FR/AR، عناصر tv-focusable). النشر 200 وتحقق: `theme-dots: 0`، وجود `themeToggle`/`light-mode`/«Fichier non disponible».
+- **الإصدار:** commit `65aea3a` — "Audio error handling + dark brown/gold default with light mode (from user fixes)".
+- **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
