@@ -354,3 +354,22 @@
 - **التحقق:** jsdom **38/38** (إضافات: وجود `#equalizer` مع 5 أعمدة، دلالات أيقونة ☀️/🌙). النشر 200 وتحقق: `walkman-container`، `equalizer`، `SNOWSKY`، `savedServer`، حارس `<select>`، الالتفاف — كلها في HTML المخدوم.
 - **الإصدار:** commit `794232d` — "Retro Walkman metallic shell (SNOWSKY) with equalizer; re-applied 4 UX fixes".
 - **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
+---
+
+### §34 — Hi-Fi Retro Walkman « bon fix » + Sync d'affichage + Media Session + localStorage (2026-08-15)
+
+- **Version:** نسخة المستخدم النهائية « Hi-Fi Retro Quran Walkman » « bon fix » — تم نشرها حرفياً كأساس، مع تحسينات مطلوبة مدمجة. العنوان «HI-FI WALKMAN».
+- **التصميم:** معدن داكن افتراضي (`--body-grad #232830→#14171c`، ذهبي gold-1/2/3)، `light-mode` فضي. كاسيت بأربعة براغي `.screw`، خط عربي SVG «القرآن الكريم» (goldGrad)، لمعان نافذة الشريط عبر `::after`، `.spool-wrapper` مع `rollLeft`/`rollRight` يتغيران الحجم عبر `timeupdate` (اليسار 40→32px، اليمين 32→40px)، 12 عمود إيكولايزر `#eqContainer` مع Web Audio (AudioContext، fftSize=64، createMediaElementSource، getByteFrequencyData) وبديل عشوائي إجرائي، أزرار PREV/PLAY/NEXT معدنية، `audioPlayer` بـ `crossOrigin="anonymous"`.
+- **CORRECTIFs الأربعة من المستخدم (تفوق على حلول سابقة):**
+  1. `ended`: تقدّم إذا `selectedIndex < options.length-1` وإلا `updatePlayState(false)` — **بدون التفاف** (يتوقف عند آخر سورة).
+  2. تبديل اللغة: حفظ الحالة **داخل `loadReciters()`** عبر `prevReciterIdx`/`prevSurahVal` (بالفهرس، وليس URL الخادم) ثم استعادة + `populateSurahs()`.
+  3. التنقل التلفزيوني: حارس `isSelect` للأسهم ↑/↓ فقط — الأسهم ↔ تختطف التركيز حتى على القوائم.
+  4. `prevBtn`: شرط `selectedIndex > 1` — ملاحظة: التعليق يقول «(index > 0)» لكن الكود `> 1`، فالسورة 1 (الفهرس 1) لا يمكن الوصول إليها بسببه؛ **أُبقي كما هو** لأن المستخدم أعلنها النسخة النهائية.
+- **الإضافة (مطلوب): مصدر الحقيقة الموحّد للعرض** — `syncSurahDisplay()`/`syncReciterDisplay()`: العنوان يعكس دائماً الخيار المحدد في القوائم (placeholder عند الفراغ)، استُدعي في معالجات `change` لكلا القائمتين، عند مسح القارئ (إعادة تعيين قائمة السور)، وبعد استعادة اللغة. إصلاح لرسالة المستخدم حول تناقض «-- اختر السورة --» مع القائمة المحددة.
+- **الإضافة (مطلوب): Media Session API** — `updateMediaSession()`: بيانات اليرادات (title=السورة، artist=القارئ، album)، `setActionHandler` لـ play/pause/previoustrack/nexttrack/seekto — **يعيد استخدام `prevBtn.click()`/`nextBtn.click()`** (DRY، يحترم حدود التنقل). يُستدعى في `change` السورة + `play`؛ و`setPositionState` في `timeupdate` (شريط الخدش على قفل الشاشة). Artwork عبر via.placeholder.com (96/512).
+- **الإضافة (مطلوب): Persistance localStorage** — `savePlayerState()` (القارئ/السورة/الزمن) على `change`/`pause`/نهاية القائمة، `restorePlayerState()` بعد `loadReciters()` الأولي (`loadReciters().then(restorePlayerState)`)، مع حارس وجود خيار السورة.
+- **ملاحظة كود:** `SURAH_NAMES_AR` عادت `const` في نسخة المستخدم → اختبار jsdom يستخرجها من مصدر HTML عبر regex بدل `window`.
+- **التحقق:** jsdom **49/49** (مواضيع جديدة: مزامنة العرض بعد nextBtn، mock Media Session (metadata title + handlers nexttrack/previoustrack يعيدان استخدام منطق الأزرار)، حفظ localStorage، + 38 سابقة). حلقات البكر: `reel.spinning` موجودة أصلاً (لا حاجة لـ `.cassette-wheel`). ملاحظة: إعادة التشغيل السابقة للاختبار كانت تفشل بسبب غياب `requestAnimationFrame` في jsdom → أُضيف polyfill في الجاهزية.
+- **الإصدار:** commit `42cbb36` — "Deploy Hi-Fi Walkman: user bon-fix (sync header, media session, localStorage) + display sync single source of truth".
+- **التحقق من النشر:** HTTP 200، علامات في HTML المخدوم: `HI-FI WALKMAN`، `eqContainer`، `updateMediaSession`، `walkman_quran_state`، `syncSurahDisplay`.
+- **الروابط:** https://ucfzem.github.io/quran-reader/ — المصدر https://github.com/ucfzem/quran-reader
