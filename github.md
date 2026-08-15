@@ -199,6 +199,18 @@
   - Vercel: `https://nuzhat-al-mushtaq.vercel.app/`
   - Cloudflare Workers: `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev/` (Version ID `42eef390-90d9-443d-acd0-b6bbd049f3dc`)
 
+## 20. تحويل الأرقام الهندية (٠-٩) إلى أرقام غربية (0-9)
+
+- **الطلب:** تحويل كل الأرقام العربية-الهندية (٠١٢٣٤٥٦٧٨٩) إلى الأرقام الغربية القياسية (0-9) في كل الجمل وملفات البيانات، دون تغيير الحروف أو العناوين أو بنية الكود.
+- **الفحص المسبق:** عدّ الأرقام الهندية في كل ملف — النتيجة: `all-regions.js` و`README.md` و`github.md` بها 0 أرقام هندية (البيانات كانت غربية أصلاً، مثل 493هـ/1100م)، بينما `index.html` بها 36 رقم في 5 أسطر فقط (التذييل، وصف الصفحة الرئيسية، شريط الترقيم، وصف الفهرس).
+- **التحويل:** ترجمة حرفية `٠-٩ → 0-9` على `index.html` فقط عبر `s.replace(/[٠-٩]/g, …)` — لا تغيير في الحروف أو العناوين أو بنية الكود (أمثلة: «٧ أقاليم × ١٠ أجزاء» → «7 أقاليم × 10 أجزاء»، «٤٩٣–٥٦٠هـ» → «493–560هـ»).
+- **التحقق:** صفر أرقام هندية متبقية في `index.html` محلياً وعلى المنصات الثلاث (فحص بـ Node عبر HTTP)؛ بنية JS سليمة؛ 44 اختباراً jsdom ناجحاً.
+- **الإصدار:** commit `c540d2a` — "Convert Arabic-Indic numerals to Western digits in UI text".
+- **النشر (المنصات الثلاث HTTP 200، أرقام غربية، صفر أرقام هندية):**
+  - GitHub Pages: `https://ucfzem.github.io/nuzhat-al-mushtaq/`
+  - Vercel: `https://nuzhat-al-mushtaq.vercel.app/`
+  - Cloudflare Workers: `https://nuzhat-al-mushtaq.azer-tyu199p.workers.dev/` (Version ID `132e8bb2-69cf-48df-984f-06b7ff7f357c`)
+
 ## 19. إزالة كل أثر للمكتبة الشاملة من البيانات (استقلال تام عن الشاملة)
 
 - **الطلب:** «It means there's no need of Shamela» — إزالة كل مرجع للشاملة من الموقع والبيانات نهائياً.
