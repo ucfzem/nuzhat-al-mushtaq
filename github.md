@@ -470,3 +470,17 @@
     -   Cloudflare Workers (reconstruit): https://quran-reader.azer-tyu199p.workers.dev — Version ID `54f76655-c3a2-4401-a327-508445628798`
 -   **Statut:** en attente de validation réelle de l'utilisateur sur le téléviseur (défilement complet jusqu'à An-Nas).
 
+## 43\. Navigation TV — clés matérielles légacy + taille modale (commit `0a8fc20`)
+
+-   **Contexte:** photos de l'utilisateur montraient (a) la modale rendue en minuscule boîte en bas à droite sur la TV (moteur WebKit ancien ignorait `inset: 0`), (b) la télécommande qui ne réagissait pas aux flèches/envois (`e.key` était `'Unidentified'` sur les télécommandes légacy).
+-   **Patch appliqué, jsdom **53/53**:**
+    1.  **Modale pleine taille:** `.dropdown-modal` remplace `inset: 0` par `top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%;` (compatible WebKit TV légacy).
+    2.  **Helper `normalizeDirection(e)`** ajouté à côté de `focusAndCenter` : traduit les `keyCode` matériels en clés logiques — 40=ArrowDown, 38=ArrowUp, 37=ArrowLeft, 39=ArrowRight, 13=Enter, 27=Escape, 10009=Back (Tizen), 461=Back (webOS), 179=MediaPlayPause, 176=MediaTrackNext, 177=MediaTrackPrevious ; renvoie `e.key` sauf si `'Unidentified'`/vide.
+    3.  **Câblage:** `normalizeDirection(e)` branché dans les trois handlers — `surahOptionsList` (flèches/Enter/Escape/Back), `reciterOptionsList` (idem), et le handler global `window` (switch flèches + clés média 179/176/177).
+-   **Vérification:** jsdom 53/53 (dont tests `keyCode` 40/38/13/27/10009/461/179/176/177 + absence de `inset: 0` + présence des 4 côtés explicites) ; marqueurs servis sur les 3 plateformes (`normalizeDirection` ×6, `inset: 0` ×0).
+-   **Déploiement (commit `0a8fc20`):**
+    -   GitHub Pages: https://ucfzem.github.io/quran-reader/
+    -   Vercel (auto via push): https://quran-reader-swart.vercel.app
+    -   Cloudflare Workers (reconstruit): https://quran-reader.azer-tyu199p.workers.dev — Version ID `6791aa5e-92d5-4134-98c4-25bd5e13dfbe`
+-   **Statut:** en attente de validation réelle de l'utilisateur sur le téléviseur (si une touche envoie un `keyCode` hors de la liste, la récupérer par débogage distant pour l'ajouter).
+
