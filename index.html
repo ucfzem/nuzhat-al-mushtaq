@@ -13,7 +13,8 @@
   <meta name="apple-mobile-web-app-title" content="نزهة المشتاق">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet"></noscript>
   <style>
     :root {
       --ink: #2b2118;
@@ -216,7 +217,7 @@
     <p>النص الحرفي الكامل منقول في جميع الأجزاء السبعين حسب الطبعة المحققة؛ لا يُختلق في أي جزء نص غير مؤكد، والعرض الحديث وسم ببيان أنه ليس من الكتاب الأصلي.</p>
   </footer>
 
-  <script src="./all-regions.js"></script>
+  <script src="./regions-meta.js"></script>
   <script>
     const contentEl = document.getElementById('content');
 
@@ -235,13 +236,47 @@
     }
     setupThemeToggle();
 
-    if (typeof allRegionsData === 'undefined' || typeof IDRISI_META === 'undefined') {
+    if (typeof allRegionsMeta === 'undefined' || typeof IDRISI_META_MINI === 'undefined') {
       contentEl.innerHTML =
-        '<div class="home"><p class="empty">⚠️ خطأ: لم يتم تحميل ملف البيانات all-regions.js.<br>' +
+        '<div class="home"><p class="empty">⚠️ خطأ: لم يتم تحميل ملف البيانات regions-meta.js.<br>' +
         'تأكد من رفعه في نفس مجلد index.html.</p></div>';
     } else {
-    const REGIONS_DB = Object.values(allRegionsData); // from all-regions.js
-    const META = IDRISI_META;
+    const REGIONS_DB = Object.values(allRegionsMeta); // lightweight list, from regions-meta.js
+    const META = IDRISI_META_MINI;
+
+    let FULL_DB = null;
+    let fullLoading = null;
+    function loadFull() {
+      if (FULL_DB) return Promise.resolve(FULL_DB);
+      if (fullLoading) return fullLoading;
+      fullLoading = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = './all-regions.js';
+        s.onload = () => {
+          try {
+            const list = Object.values(allRegionsData);
+            FULL_DB = {};
+            list.forEach(r => { FULL_DB[r.id] = r; });
+            resolve(FULL_DB);
+          } catch (e) { reject(e); }
+        };
+        s.onerror = () => reject(new Error('failed to load all-regions.js'));
+        document.head.appendChild(s);
+      });
+      return fullLoading;
+    }
+    function withFull(renderFn) {
+      if (FULL_DB) return renderFn();
+      contentEl.innerHTML =
+        '<div class="home"><p class="empty">⏳ جارٍ تحميل النص الكامل للكتاب...</p></div>';
+      loadFull().then(renderFn).catch(() => {
+        contentEl.innerHTML =
+          '<div class="home"><p class="empty">⚠️ تعذّر تحميل النص الكامل. تحقّق من الاتصال ثم أعد المحاولة.</p></div>';
+      });
+    }
+    function fullRegion(regId) {
+      return (FULL_DB && FULL_DB[regId]) || REGIONS_DB.find(r => r.id == regId);
+    }
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -390,13 +425,14 @@
     }
 
     function show(regId, partId, saveHistory) {
+      if (!FULL_DB) { withFull(() => show(regId, partId, saveHistory)); return; }
       if (saveHistory !== false) {
         try {
           localStorage.setItem('idrisi_last_reg', String(regId));
           localStorage.setItem('idrisi_last_part', String(partId));
         } catch (e) {}
       }
-      const reg = REGIONS_DB.find(r => r.id == regId);
+      const reg = fullRegion(regId);
       if (!reg) return renderHome();
       const part = reg.parts.find(p => p.id == partId);
       if (!part) return renderHome();
@@ -496,8 +532,9 @@
     }
 
     function renderIndexPage() {
+      if (!FULL_DB) { withFull(renderIndexPage); return; }
       const allEntries = [];
-      REGIONS_DB.forEach(region => {
+      Object.values(FULL_DB).forEach(region => {
         region.parts.forEach(part => {
           allEntries.push({
             regId: region.id, regTitle: region.title,
@@ -545,6 +582,7 @@
       if (lastReg && lastPart) { show(lastReg, lastPart, false); resumed = true; }
     } catch (e) {}
     if (!resumed) renderHome();
+    loadFull().catch(() => {});
     }
   </script>
   <script data-app-sw="1">if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})}</script>
